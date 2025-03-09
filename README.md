@@ -1,6 +1,6 @@
 # Unknown
 成员：
-+ [PB23111723黄明昊](https://github.com/VideoBus66)（组长）
++ [PB23111723黄明昊](https://github.com/VideoBus66)（Group Leader）
 + [PB23111726李易](https://github.com/Leeyiiii)
 + [PB23111697刘思宇](https://github.com/MrKyomoto)
 + [PB23000055于皓翔](https://github.com/Parfait5)
