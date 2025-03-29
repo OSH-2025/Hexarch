@@ -7,7 +7,7 @@
 + [PB23111596王超然](https://github.com/cmdyc)
 + [PB23061139马文宇](https://github.com/LUNACY72)
 
-![Group LOGO](./pic/group_logo.jpg)
+![Group LOGO](./asset/group_logo.jpg)
 
 ## 项目进度
 | 日期      | 事件     | 结果                                                    | 备注           |
@@ -18,4 +18,4 @@
 |2025.3.18-2025.3.23|各自选择两者之一调研|||
 |2025.3.23|第二次讨论（线下）|在两个不同的选题中，经过“激烈”的讨论，最终选定为：FreeRTOS与FatFs的结合及部分内核的Rust重构与添加| [0323 2nd discussion](https://github.com/OSH-2025/hexarch/blob/master/docs/discussion/0323_2nd_discussion.md)|
 |2025.3.24|第三次讨论（线下）|我们在线下具体讨论了调研报告的内容和分工||
-|2025.3.29|第四次讨论（线下）|我们在研讨室根据这一周各自的调研内容，撰写了最终的调查报告，具体分工为：于浩翔 - C语言的局限性和Rust的优越性，C语言与Rust的混合编译；刘思宇&&李易 - FreeRTOS文档&&源码阅读；黄明昊&&马文宇 - FatFs文档&&源码阅读；王超然 - FreeRTOS 系统可拓展模块及其应用场景||
+|2025.3.29|第四次讨论（线下）|我们在研讨室根据这一周各自的调研内容，撰写了[最终的调查报告](./docs/research%20report/调研报告%20-%20FreeRTOS与FatFs的结合及部分内核的Rust重构与添加.pdf)，具体分工为：于浩翔 - C语言的局限性和Rust的优越性，C语言与Rust的混合编译；刘思宇&&李易 - FreeRTOS文档&&源码阅读；黄明昊&&马文宇 - FatFs文档&&源码阅读；王超然 - FreeRTOS 系统可拓展模块及其应用场景||
