@@ -1,4 +1,4 @@
-# hexarch
+# Hexarch
 成员：
 + [PB23111723黄明昊](https://github.com/VideoBus66)（Group Leader）
 + [PB23111726李易](https://github.com/Leeyiiii)
