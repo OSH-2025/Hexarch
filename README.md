@@ -7,7 +7,7 @@
 + [PB23111596王超然](https://github.com/cmdyc)
 + [PB23061139马文宇](https://github.com/LUNACY72)
 
-![Group LOGO](./pic/group_logo.jpg)
+![Group LOGO](https://github.com/OSH-2025/hexarch/blob/master/asset/group_logo.jpg)
 
 ## 项目进度
 | 日期      | 事件     | 结果                                                    | 备注           |
