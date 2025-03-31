@@ -19,3 +19,4 @@
 |2025.3.23|第二次讨论（线下）|在两个不同的选题中，经过“激烈”的讨论，最终选定为：FreeRTOS与FatFs的结合及部分内核的Rust重构与添加| [0323 2nd discussion](https://github.com/OSH-2025/hexarch/blob/master/docs/discussion/0323_2nd_discussion.md)|
 |2025.3.24|第三次讨论（线下）|我们在线下具体讨论了调研报告的内容和分工||
 |2025.3.29|第四次讨论（线下）|我们在研讨室根据这一周各自的调研内容，撰写了最终的调查报告，具体分工为：<br>于皓翔 - C语言的局限性和Rust的优越性，C语言与Rust的混合编译；<br>刘思宇&&李易 - FreeRTOS文档&&源码阅读；<br>黄明昊&&马文宇 - FatFs文档&&源码阅读；<br>王超然 - FreeRTOS 系统可拓展模块及其应用场景|[researchReport](https://github.com/OSH-2025/hexarch/blob/master/docs/research%20report/%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A%20-%20FreeRTOS%E4%B8%8EFatFs%E7%9A%84%E7%BB%93%E5%90%88%E5%8F%8A%E9%83%A8%E5%88%86%E5%86%85%E6%A0%B8%E7%9A%84Rust%E9%87%8D%E6%9E%84%E4%B8%8E%E6%B7%BB%E5%8A%A0.pdf)|
+|2025.3.30|第五次讨论(线上)|我们使用飞书协作平台开了一个线上会议,详细讨论了可行性报告的内容以及分工||
