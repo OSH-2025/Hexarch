@@ -2,3 +2,9 @@
 .vscode/
 out
 target/
+debug/
+build/
+Cargo.lock
+**/*.rs.bk
+**/bind*.rs
+test/
