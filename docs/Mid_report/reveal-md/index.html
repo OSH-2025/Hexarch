@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>FreeRTOS Rust 重写与扩展</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./dist/reset.css" />
+    <link rel="stylesheet" href="./dist/reveal.css" />
+    <link rel="stylesheet" href="./dist/theme/simple.css" id="theme" />
+    <link rel="stylesheet" href="./css/highlight/monokai-sublime.css" />
+
+    <link rel="stylesheet" href="./_assets/custom.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-markdown data-separator="<!--s-->" data-separator-vertical="<!--v-->">
+          <textarea data-template>
+            
+
+<div class="middle center">
+<div style="width: 100%">
+
+# FreeRTOS Rust 重写与扩展
+
+<hr/>
+
+By [Hexarch](https://github.com/OSH-2025/Hexarch)
+
+</div>
+</div>
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# Part.1 项目介绍
+
+使用 Rust 语言对 FreeRTOS 内核进行改写，为 FreeRTOS 增加文件系统（基于FatFS实现）、网络通信等模块。
+
+![alt text](image.png)  
+![alt text](image-1.png)
+
+</div>
+</div>
+
+<!--v-->
+
+## 项目目标
+
+- **目标**：使用 Rust 重写 FreeRTOS 内核，扩展功能：
+  - 文件系统（基于 FatFS）：必做
+  - 网络通信（FreeRTOS+TCP）：可选
+  - 命令行接口（CLI）：可选
+  - 轻量级日志系统：可选
+
+- **Rust 的优势**：
+  - 内存安全，避免内存泄漏
+  - 模块化代码，易于维护
+  - 严格类型系统，减少运行时错误
+
+<!--v-->
+
+## FreeRTOS 简介
+
+> 完全开源的轻量级实时操作系统，专为嵌入式系统设计
+
+<hr/>
+
+- **核心功能**：
+  - 任务管理、时间管理
+  - 信号量、消息队列
+  - 内存管理、软件定时器
+- **应用场景**：
+  - 物联网设备、工业控制、汽车电子控制单元
+  - 确保严格时间限制下的任务确定性
+
+Note:FreeRTOS 是一个轻量级的实时操作系统。
+实时操作系统 (RTOS) 是一种体积小巧、确定性强的计算机操作系统。 RTOS 通常用于需要在严格时间限制内对外部事件做出反应的嵌入式系统，如医疗设备和汽车电子控制单元 (ECU)。 通常，此类嵌入式系统中只有一两项功能需要确定性时序，即使嵌入式系统不需要严格的实时反应，使用 RTOS 仍能提供诸多优势。支持多任务处理与并发，调度与实时调度等操作系统功能。由于 RTOS 确保了系统的实时性和可靠性,所以更应该用在对时间要求有限制的嵌入式设备中(如工业控制系统,家用电器系统,物联网系统等)
+FreeRTOS功能包括：任务管理、时间管理、信号量、消息队列、内存管理、记录功能、软件定时器、协程等，可基本满足较小系统的需要。
+
+<!--v-->
+
+## 往年项目
+
+<div class="mul-cols">
+<div class="col">
+
+**[Imagination](https://github.com/OSH-2023/imagination)**
+
+- 完成内核 Rust 重写
+- MMU 软件模拟
+- 通过测试程序验证
+
+**局限**：
+- 未解决混合编译
+
+</div>
+<div class="col">
+
+**[Mustrust](https://github.com/OSH-2024/mustrust)**
+
+- 内核重写 + 混合编译
+- QEMU 模拟器运行
+- MMU 软件模拟
+
+**局限**：
+- 代码结构未模块化
+
+</div>
+</div>
+
+<!--v-->
+
+## 文件系统：FatFS
+
+- **FatFS 简介**：
+  - 负责管理和存储文件信息的软件机构
+  - 完全免费开源
+  - 完全用标准C语言编写，硬件平台独立
+  - 代码简洁，效率高，便于维护
+  - 多样化配置选项，可用宏定义和条件编译实现裁剪
+  - 具有成熟的社区
+
+<!--v-->
+- **架构**：
+  - 应用层：用户接口
+  - 文件系统层：逻辑操作
+  - 硬件抽象层：硬件交互
+
+![alt text](image-2.png)    ![alt text](image-3.png)
+
+<!--v-->
+
+## 为何选择FatFS？
+
+FreeRTOS 本身是一个轻量级实时操作系统（RTOS），默认不包含文件系统（File System）功能，这在嵌入式开发中可能带来以下不便：
+- 数据存储复杂：需手动管理 Flash/EEPROM，缺乏标准化存储结构
+- 固件升级困难：无文件系统时，需直接操作 Flash 分区，易引发地址错误或兼容性问题。
+- 外部设备支持弱：SD 卡、USB 等需额外移植文件系统（如 FATFS），增加驱动开发负担。
+
+我们选择以提高资源占用为代价，为 FreeRTOS 加入文件系统，为使用者提供更多便利。
+
+
+<!--v-->
+
+## 为何选择FatFS？
+
+<div class="three-line">
+
+|问题|无文件系统|使用 FatFS|
+|:--:|:--:|:--:|
+|数据存储|手动管理 Flash|标准化文件操作|
+|固件升级|易出错|简便可靠|
+|外部设备|支持弱|支持 SD 卡/USB|
+|日志管理|需自定义工具|持久化存储|
+
+</div>
+
+- **总结**：FatFS 简化开发，提升 FreeRTOS 功能
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# Part.2 技术路线
+
+</div>
+</div>
+
+<!--v-->
+
+## Rust 重写优势
+
+- **C 到 Rust 映射**：
+  - 使用 `libc` 和 `bindgen` 实现函数/类型对应
+- **内存安全**：
+  - 所有权机制无需手动管理内存
+- **模块化（一个例子）**：
+  - 我们可以将 `task.c`（5000 行）拆分为：
+    - 任务创建与删除
+    - 任务切换与调度
+    - 任务延时与同步
+  - 借助rust的mod等语言特性，我们可以将task模块细分，这既便于维护又便于阅读。
+
+Note: Rust的所有权、生命周期等机制以及语言本身的严格性使得代码更不容易出错误，比如内存管理方面，C语言在涉及到动态内存时需要手动管理内存的申请和释放，而Rust不需要我们手动管理
+- freeRTOS的内核虽然只有几个C文件，但代码结构还是不够清晰，以task.c为例，这个C文件有5000行，阅读起来还是比较麻烦的，但task模块本身拥有的函数还是有很明显的划分的，如可分为任务创建与删除，任务切换与调度，任务延时与同步 等部分，借助rust的mod等语言特性，我们可以将这些模块再细分，这既便于维护又便于阅读。
+
+
+<!--v-->
+
+## 混合编译问题
+- Rust 可以通过外部函数接口调用（Foreign Function Interface, FFI）来调用 C 代码。
+> FFI 是一种通用的机制，可以使不同语言之间的函数相互调用。
+- bindgen是一个非常有用的工具。其主要功能是自动生成Rust的外部函数接口（FFI）代码，这使得Rust程序能够调用C语言库中的函数并使用其类型。
+> bindgen作为一个桥梁，自动化了Rust与C语言之间的接口生成过程，极大地简化了在Rust代码中使用C语言库的复杂性。
+
+
+
+<!--v-->
+
+## 混合编译示例
+
+<div class="mul-cols">
+<div class="col">
+
+**C 代码：test.h**
+
+```c
+typedef struct TestC {
+    int foo;
+    char c;
+    float f;
+} TestC;
+
+TestC init_test();
+int out_int(int a);
+char out_char(char a);
+float out_float(float f);
+```
+
+</div>
+<div class="col">
+
+**C 代码：test.c**
+
+```c
+#include "test.h"
+TestC init_test() {
+    TestC test;
+    test.foo = 10;
+    test.c = '#';
+    test.f = 3.1415;
+    return test;
+}
+int out_int(int a) { return a * 3; }
+char out_char(char a) { return a + 1; }
+float out_float(float f) { return f; }
+```
+
+</div>
+</div>
+
+<!--v-->
+
+## 混合编译示例（续）
+
+在src中创建wrapper.h并在其中include需要的库,这里我们需要的是test
+**wrapper.h**
+```c
+#include "test.h"
+```
+使用`bindgen`生成连接：
+```bash
+bindgen wrapper.h -o wrapper.rs  //这会根据wrapper中包含的库文件生成一个链接文件wrapper.rs
+```
+在项目根目录中创建`build.rs`文件
+**build.rs**
+
+```rust
+fn main() {
+    cc::Build::new()
+        .file("src/test.c")
+        .compile("wrapper");
+}
+```
+<!--v-->
+
+## 混合编译示例（续）
+为了调用，我们需要使用`Rust`的`mod`
+```rust
+use wrapper::{init_test, out_char, out_float, out_int};
+mod wrapper; //使用mod 将wrapper库包含进来,使得我们可以调用
+extern crate libc;
+use libc::{c_char, c_int, c_float};
+fn main() {
+    println!("Hello, world!");
+    //C语言的库需要显式的使用 unsafe 块 包裹, 这样才可以正确的调用
+    unsafe{
+        let t = init_test();
+        println!("{:?}",t);
+        let foo: c_int = out_int(t.foo);
+        println!("{}",foo);
+        let c : c_char = out_char(t.c);
+        println!("{}",c);
+        let f: c_float = out_float(t.f);
+        println!("{}",f);
+    }
+}
+```
+
+<!--v-->
+
+构建项目测试运行，回到项目根目录下，执行以下命令：
+```bash
+cargo build
+```
+
+如果没有报错，说明构建成功
+```bash
+   Compiling rustbindgenc v0.1.0 (/home/kyomoto/repo/rust/rustbindgenc)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/rustbindgenc`
+Hello, world!
+TestC { foo: 10, c: 35, f: 3.1415 }
+30
+36
+3.1415
+```
+<!--v-->
+由此，改写FreeRTOS时，可以依据以下步骤：
+- 部署FreeRTOS
+- 在wrapper.h中include部署所需的c源码
+- 使用bindgen生成wrapper.rs
+- 引入cc库在build.rs中将所需的c源码编译成静态库
+- 在rust中使用mod关键字引入wrapper，不出意外，便可正常在rust中调用C语言的代码
+  
+细节问题：
+- 常量multi-defined
+- 类型并不完全对应，如`char`型使用`bindgen`后对应`u8`
+- 宏定义，宏函数
+Note:  - 当然，这个步骤中省略了很多细节问题，如Bindgen自动生成FFI时，可能会出现常量multi-defined的问题，这需要我们手动解决（mustrust给出了一些参考的解决方案）；再如Bindgen虽然让我们直接得到了Rust与C的语言对应关系，但这个关系并非完全符合期望，如c的char型在使用Bindgen后得到的rust对应类型是u8 (即libc中的c_char)，这使得c中的打印字符串字面值等函数无法直接在rust中调用得到期望的输出（即在rust中是当作数字输出的而非字面值）；再如freeRTOS中含有大量宏定义，宏函数，这些内容的Bindgen对应关系并不是很明确。
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# Part.3 可拓展模块介绍
+
+</div>
+</div>
+
+
+<!--v-->
+
+## 模块优化
+
+- **低功耗**：
+  - 实现 `vApplicationIdleHook()` 执行后台任务
+- **动态内存分配**：
+  - 使用 Rust 全局分配器：
+
+```rust
+use umm_malloc::UmmMalloc;
+
+#[global_allocator]
+static ALLOCATOR: UmmMalloc = UmmMalloc::new();
+
+fn main() {
+    let mut v = Vec::new();
+    v.push(1);
+}
+```
+Note:空闲钩子函数通常由用户实现，并命名为 vApplicationIdleHook()。当系统没有其他就绪任务时，FreeRTOS 的空闲任务会不断循环执行，并在每次循环中调用这个钩子函数，从而允许用户在 CPU 空闲时执行一些后台任务。
+与静态内存分配相比，动态内存分配的灵活性更高，能够根据运行时的需求动态分配和释放内存，适应性强，适合内存需求变化的应用场景。同时，它通过在需要时分配内存，释放后再利用，提高了内存的使用效率，能够实现内存碎片统计、内存泄漏检测。
+鉴于我们使用rust进行内核的重构，可以利用rust的便捷性，直接用rust提供的全局内存分配器进行内存分配的优化。
+<!--v-->
+
+## 模块添加
+
+<div class="mul-cols">
+<div class="col">
+
+**文件系统（FatFS）**
+
+- `diskio.c/h`：硬件接口
+- `ff.c/h`：文件系统逻辑
+- `ffconf.h`：配置文件
+- `interger.h` —— 仅实现数据类型重定义，增加系统的可移植性
+
+**网络（FreeRTOS+TCP）（可选）**
+
+- 轻量级 TCP/IP 协议栈
+- 支持 多种网络协议和特性
+
+Note:集成步骤：
+- 配置 FreeRTOS+TCP：​根据项目需求，修改 FreeRTOSIPConfig.h 配置文件，设置网络参数和启用所需的协议。
+- 网络接口实现：​编写与硬件相关的网络接口驱动程序，确保与 FreeRTOS+TCP 的接口兼容。
+- 与 FreeRTOS 集成：​将 FreeRTOS+TCP 源码添加到 FreeRTOS 项目中，配置相关的任务和中断优先级。
+注意事项：
+- 官方支持：​作为 FreeRTOS 官方提供的协议栈，FreeRTOS+TCP 在兼容性和支持方面具有优势。
+- 功能丰富：​支持多播、IPv6、零拷贝等特性，适用于功能需求较高的应用。
+
+实现思路:基于FreeRTOS的队列和串口驱动，解析输入命令
+所需知识:串口通信、字符串解析、任务状态查询API
+
+日志分级：支持分级日志[普通信息INFO/警告WARN/错误ERROR/调试信息Debug]
+输出目标：内存缓冲区（用于循环储存）、外部闪存（长期储存），也可以通过串口与CLI结合实现实时查看
+格式简化：时间戳 + 级别 + 消息（如 [12:30:45][INFO] Sensor data: 25°C）
+轻量化：资源占用要低，不能消耗太多内存或处理时间
+
+
+</div>
+<div class="col">
+
+
+**命令行接口（CLI）（可选）**
+
+- 串口/USB 命令输入
+- 类似 Linux `ps`、`top`
+
+
+**轻量级日志（可选）**
+
+- 分级：INFO/WARN/ERROR
+- 输出：内存、闪存、串口
+- 格式：`[时间戳]][级别][消息]`
+
+
+</div>
+</div>
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# Part.4 创新与总结
+
+</div>
+</div>
+
+<!--v-->
+
+## 创新点
+
+- **Rust 重写**：
+  - 内存安全，运行高效
+  - 模块化代码结构
+- **文件系统**：
+  - 数据持久化存储
+  - 简化设备管理
+- **扩展模块（可选）**：
+  - 网络、CLI、日志
+  - 拓展应用场景
+<!--v-->
+
+## 总结
+- **创新点**：
+  - Rust 重写 FreeRTOS
+  - 集成 FatFS
+  - 可能扩展其他模块
+- **意义**：
+  - 利用上`Rust`的高效性和安全性,为嵌入式开发提供强大 RTOS
+  - 为更复杂场景提供应用
+          </textarea>
+        </section>
+      </div>
+    </div>
+
+    <script src="./dist/reveal.js"></script>
+
+    <script src="./mermaid/dist/mermaid.min.js"></script>
+
+    <script src="./plugin/markdown/markdown.js"></script>
+    <script src="./plugin/highlight/highlight.js"></script>
+    <script src="./plugin/zoom/zoom.js"></script>
+    <script src="./plugin/notes/notes.js"></script>
+    <script src="./plugin/math/math.js"></script>
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        slideNumber: true,
+        highlight: {
+          highlightOnLoad: false
+        },
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath
+        ]
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"transition":"slide","transitionSpeed":"fast","center":false,"slideNumber":"c/t","width":1000,"_":["mdrepo.md"],"static":"Mid_report"}, queryOptions);
+    </script>
+
+
+    <script>
+      Reveal.initialize(options);
+      Reveal.addEventListener('ready', function (event) {
+        const blocks = Reveal.getRevealElement().querySelectorAll('pre code:not(.mermaid)');
+        const hlp = Reveal.getPlugin('highlight');
+        blocks.forEach(hlp.highlightBlock);
+      });
+    </script>
+
+    <script>
+      const mermaidOptions = extend({ startOnLoad: false }, {});
+      mermaid.startOnLoad = false;
+      mermaid.initialize(mermaidOptions);
+      const cb = function (event) {
+        mermaid.init(mermaidOptions, '.stack.present > .present pre code.mermaid');
+        mermaid.init(mermaidOptions, '.slides > .present:not(.stack) pre code.mermaid');
+      }
+      Reveal.addEventListener('ready', cb);
+      Reveal.addEventListener('slidetransitionend', cb);
+    </script>
+  </body>
+</html>
