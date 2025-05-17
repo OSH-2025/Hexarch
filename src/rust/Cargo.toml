@@ -1,0 +1,20 @@
+[package]
+name = "freertos-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["FreeRTOS Rust Port Team"]
+description = "A Rust implementation of FreeRTOS kernel"
+
+[lib]
+name = "freertos"
+crate-type = ["staticlib"]
+
+[dependencies]
+cortex-m = "0.7"  # ARM Cortex-M CPU support
+bitflags = "2.4"  # Bit flags for register manipulation
+atomic = "0.5"    # Atomic operations for no_std
+spin = "0.9"      # Spinlocks for synchronization
+embedded-hal = "0.2"  # Hardware abstraction layer
+
+[features]
+default = [] 
