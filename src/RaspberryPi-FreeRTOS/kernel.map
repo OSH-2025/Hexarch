@@ -1,0 +1,382 @@
+Archive member included to satisfy reference by file (symbol)
+
+/usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+                              /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o (strncpy)
+/usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+                              /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o (memset)
+/usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+                              /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o (memcpy)
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RESERVED         0x00000000         0x00008000         r
+INIT_RAM         0x00010000         0x00008000         xrw
+RAM              0x00020000         0x08000000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+LOAD /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+
+.init           0x00010000       0xa4
+ *(.init)
+ .init          0x00010000       0xa4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+                0x00010000                _start
+
+.module_entries
+                0x000100a4        0x0
+                0x000100a4                        __module_entries_start = .
+ *(.module_entries)
+ *(.module_entries.*)
+                0x000100a4                        __module_entries_end = .
+                0x000100a4                        __module_entries_size = SIZEOF (.module_entries)
+
+.text           0x00020000     0x47d0
+ *(.text)
+ .text          0x00020000      0x344 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+                0x00020000                pxPortInitialiseStack
+                0x00020240                xPortStartScheduler
+                0x0002025c                vPortEndScheduler
+                0x00020274                vTickISR
+ .text          0x00020344      0x2ac /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+                0x00020344                vPortISRStartFirstTask
+                0x000203dc                vPortYieldProcessor
+                0x00020490                vFreeRTOS_ISR
+                0x00020540                vPortEnterCritical
+                0x00020584                vPortExitCritical
+ .text          0x000205f0      0x768 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+                0x000205f0                xCoRoutineCreate
+                0x00020758                vCoRoutineAddToDelayedList
+                0x00020b00                vCoRoutineSchedule
+                0x00020ccc                xCoRoutineRemoveFromEventList
+ .text          0x00020d58      0x29c /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+                0x00020d58                vListInitialise
+                0x00020dc0                vListInitialiseItem
+                0x00020dec                vListInsertEnd
+                0x00020e84                vListInsert
+                0x00020f5c                vListRemove
+ .text          0x00020ff4      0xbb0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+                0x00020ff4                xQueueGenericReset
+                0x00021108                xQueueGenericCreate
+                0x000211d0                xQueueGenericSend
+                0x00021374                xQueueGenericSendFromISR
+                0x00021450                xQueueGenericReceive
+                0x00021654                xQueueReceiveFromISR
+                0x00021734                uxQueueMessagesWaiting
+                0x00021768                uxQueueMessagesWaitingFromISR
+                0x00021798                vQueueDelete
+                0x00021ad0                xQueueIsQueueEmptyFromISR
+                0x00021b5c                xQueueIsQueueFullFromISR
+ .text          0x00021ba4     0x1924 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+                0x00021ba4                xTaskGenericCreate
+                0x00021df0                vTaskDelete
+                0x00021ef0                vTaskDelayUntil
+                0x00022000                vTaskDelay
+                0x00022084                uxTaskPriorityGet
+                0x000220dc                vTaskPrioritySet
+                0x00022284                vTaskSuspend
+                0x00022388                xTaskIsTaskSuspended
+                0x00022404                vTaskResume
+                0x000224fc                xTaskResumeFromISR
+                0x00022618                vTaskStartScheduler
+                0x000226b4                vTaskEndScheduler
+                0x000226ec                vTaskSuspendAll
+                0x0002271c                xTaskResumeAll
+                0x000228c0                xTaskGetTickCount
+                0x000228f4                xTaskGetTickCountFromISR
+                0x0002292c                uxTaskGetNumberOfTasks
+                0x00022950                vTaskIncrementTick
+                0x00022b6c                vTaskSetApplicationTaskTag
+                0x00022bc8                xTaskGetApplicationTaskTag
+                0x00022c24                xTaskCallApplicationTaskHook
+                0x00022ca0                vTaskSwitchContext
+                0x00022da8                vTaskPlaceOnEventList
+                0x00022e44                xTaskRemoveFromEventList
+                0x00022f5c                vTaskSetTimeOutState
+                0x00022fa4                xTaskCheckForTimeOut
+                0x00023098                vTaskMissedYield
+ .text          0x000234c8      0x3a4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+                0x0002357c                irqHandler
+                0x0002361c                irqUnblock
+                0x00023638                irqBlock
+                0x00023654                irqRegister
+                0x000236b8                irqEnable
+                0x0002378c                irqDisable
+ .text          0x0002386c      0x5d8 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+                0x0002386c                SetGpioFunction
+                0x00023948                SetGpioDirection
+                0x0002397c                SetGpio
+                0x00023a34                ReadGpio
+                0x00023a84                EnableGpioDetect
+                0x00023c34                DisableGpioDetect
+                0x00023dec                ClearGpioInterrupt
+ .text          0x00023e44      0x4ac /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+                0x00023e44                pvPortMalloc
+                0x0002400c                vPortFree
+                0x00024088                xPortGetFreeHeapSize
+                0x000240ac                vPortInitialiseBlocks
+ .text          0x000242f0       0x18 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+ .text          0x00024308      0x1e8 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+                0x00024308                uart_putc
+                0x00024358                uart_puts
+                0x000243a4                uart_init
+                0x000243bc                task1
+                0x000243fc                task2
+                0x00024444                main
+ .text          0x000244f0       0xd0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+                0x000244f0                strncpy
+ .text          0x000245c0       0xfc /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+                0x000245c0                memset
+ .text          0x000246bc      0x114 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+                0x000246bc                memcpy
+
+.rodata         0x000247d0       0x42
+ .rodata        0x000247d0        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .rodata        0x000247d4        0x5 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ *fill*         0x000247d9        0x3 
+ .rodata        0x000247dc        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .rodata        0x000247e0        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+                0x000247e0                pRegs
+ .rodata        0x000247e4        0x8 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .rodata        0x000247ec       0x26 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+
+.glue_7         0x00024814        0x0
+ .glue_7        0x00024814        0x0 linker stubs
+
+.glue_7t        0x00024814        0x0
+ .glue_7t       0x00024814        0x0 linker stubs
+
+.vfp11_veneer   0x00024814        0x0
+ .vfp11_veneer  0x00024814        0x0 linker stubs
+
+.v4_bx          0x00024814        0x0
+ .v4_bx         0x00024814        0x0 linker stubs
+
+.iplt           0x00024814        0x0
+ .iplt          0x00024814        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+
+.rel.dyn        0x00024814        0x0
+ .rel.iplt      0x00024814        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+
+.data           0x00024814        0xc
+ *(.data)
+ .data          0x00024814        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .data          0x00024814        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+                0x00024814                ulCriticalNesting
+ .data          0x00024818        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .data          0x00024818        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .data          0x00024818        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .data          0x00024818        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .data          0x0002481c        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .data          0x0002481c        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .data          0x0002481c        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .data          0x00024820        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+ .data          0x00024820        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .data          0x00024820        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .data          0x00024820        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .data          0x00024820        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.igot.plt       0x00024820        0x0
+ .igot.plt      0x00024820        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+
+.bss            0x00024820     0x13e0
+                0x00024820                        __bss_start = .
+ *(.bss)
+ .bss           0x00024820        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .bss           0x00024820        0x4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+                0x00024820                g_bStarted
+ .bss           0x00024824       0x80 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+                0x00024890                pxCurrentCoRoutine
+ .bss           0x000248a4        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .bss           0x000248a4        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .bss           0x000248a4      0x100 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+                0x000248a4                pxCurrentTCB
+ .bss           0x000249a4      0x24c /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .bss           0x00024bf0        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .bss           0x00024bf0     0x1010 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+                0x00025bfc                allocated
+ .bss           0x00025c00        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+ .bss           0x00025c00        0x0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .bss           0x00025c00        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .bss           0x00025c00        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .bss           0x00025c00        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+ *(.bss.*)
+                0x00025c00                        __bss_end = .
+                0x08020000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
+LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/libgcc.a
+LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a
+OUTPUT(kernel.elf elf32-littlearm)
+LOAD linker stubs
+
+.debug_info     0x00000000     0x31e1
+ .debug_info    0x00000000      0x270 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .debug_info    0x00000270      0x18b /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_info    0x000003fb      0x521 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_info    0x0000091c      0x281 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_info    0x00000b9d      0x843 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_info    0x000013e0      0xe5d /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_info    0x0000223d      0x2b7 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_info    0x000024f4      0x3e4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_info    0x000028d8      0x2e7 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_info    0x00002bbf      0x251 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_info    0x00002e10      0x14a /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_info    0x00002f5a      0x135 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_info    0x0000308f      0x152 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_abbrev   0x00000000     0x11e1
+ .debug_abbrev  0x00000000      0x172 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .debug_abbrev  0x00000172       0xf9 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_abbrev  0x0000026b      0x1e4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_abbrev  0x0000044f       0xcf /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_abbrev  0x0000051e      0x1d7 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_abbrev  0x000006f5      0x291 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_abbrev  0x00000986      0x150 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_abbrev  0x00000ad6      0x16d /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_abbrev  0x00000c43      0x1e7 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_abbrev  0x00000e2a      0x178 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_abbrev  0x00000fa2       0xbe /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_abbrev  0x00001060       0xb7 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_abbrev  0x00001117       0xca /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_aranges  0x00000000      0x1a0
+ .debug_aranges
+                0x00000000       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .debug_aranges
+                0x00000020       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_aranges
+                0x00000040       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_aranges
+                0x00000060       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_aranges
+                0x00000080       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_aranges
+                0x000000a0       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_aranges
+                0x000000c0       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_aranges
+                0x000000e0       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_aranges
+                0x00000100       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_aranges
+                0x00000120       0x20 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_aranges
+                0x00000140       0x20 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_aranges
+                0x00000160       0x20 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_aranges
+                0x00000180       0x20 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_line     0x00000000     0x221a
+ .debug_line    0x00000000      0x201 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .debug_line    0x00000201       0xdb /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_line    0x000002dc      0x306 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_line    0x000005e2      0x1cd /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_line    0x000007af      0x561 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_line    0x00000d10      0x851 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_line    0x00001561      0x184 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_line    0x000016e5      0x1e5 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_line    0x000018ca      0x25f /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_line    0x00001b29      0x1bb /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_line    0x00001ce4      0x190 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_line    0x00001e74      0x1b9 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_line    0x0000202d      0x1ed /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_str      0x00000000     0x178f
+ .debug_str     0x00000000     0x178f /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+                                0x283 (size before relaxing)
+ .debug_str     0x0000178f      0x192 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_str     0x0000178f      0x4b5 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_str     0x0000178f      0x267 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_str     0x0000178f      0x5df /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_str     0x0000178f      0x9b7 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_str     0x0000178f      0x1ed /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_str     0x0000178f      0x2d3 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_str     0x0000178f      0x2f6 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_str     0x0000178f      0x1f7 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_str     0x0000178f      0x198 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_str     0x0000178f      0x182 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_str     0x0000178f      0x19f /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.comment        0x00000000       0x26
+ .comment       0x00000000       0x26 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+                                 0x27 (size before relaxing)
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .comment       0x00000026       0x27 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .comment       0x00000026       0x27 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .comment       0x00000026       0x27 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .comment       0x00000026       0x27 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.ARM.attributes
+                0x00000000       0x2c
+ .ARM.attributes
+                0x00000000       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .ARM.attributes
+                0x0000002e       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .ARM.attributes
+                0x0000005c       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .ARM.attributes
+                0x0000008a       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .ARM.attributes
+                0x000000b8       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .ARM.attributes
+                0x000000e6       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .ARM.attributes
+                0x00000114       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .ARM.attributes
+                0x00000142       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .ARM.attributes
+                0x00000170       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .ARM.attributes
+                0x0000019e       0x12 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/startup.o
+ .ARM.attributes
+                0x000001b0       0x2e /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .ARM.attributes
+                0x000001de       0x2a /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .ARM.attributes
+                0x00000208       0x2a /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .ARM.attributes
+                0x00000232       0x2a /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_frame    0x00000000      0xd5c
+ .debug_frame   0x00000000       0xac /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .debug_frame   0x000000ac       0x90 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+ .debug_frame   0x0000013c       0xf0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/croutine.o
+ .debug_frame   0x0000022c       0xb0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/list.o
+ .debug_frame   0x000002dc      0x210 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/queue.o
+ .debug_frame   0x000004ec      0x450 /home/yhx/OS/RaspberryPi-FreeRTOS/build/FreeRTOS/Source/tasks.o
+ .debug_frame   0x0000093c       0xf0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/irq.o
+ .debug_frame   0x00000a2c       0xf0 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/Drivers/gpio.o
+ .debug_frame   0x00000b1c       0xd0 /home/yhx/OS/RaspberryPi-FreeRTOS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_frame   0x00000bec       0xc4 /home/yhx/OS/RaspberryPi-FreeRTOS/build/Demo/main.o
+ .debug_frame   0x00000cb0       0x3c /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_frame   0x00000cec       0x34 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_frame   0x00000d20       0x3c /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
+
+.debug_loclists
+                0x00000000      0x44e
+ .debug_loclists
+                0x00000000      0x11f /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-strncpy.o)
+ .debug_loclists
+                0x0000011f      0x1c9 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memset.o)
+ .debug_loclists
+                0x000002e8      0x166 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/libc.a(libc_a-memcpy-stub.o)
