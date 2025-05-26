@@ -1,0 +1,10 @@
+[package]
+name = "c-to-rust"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libc = "0.2.172"
+
+[feature]
+configUSE_16_BIT_TICKS = []
