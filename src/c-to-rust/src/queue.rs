@@ -191,4 +191,86 @@ pub extern "C"
         //TODO
     }
 
-    //TODO(到line 1241(未写))
+#[no_mangle]
+pub extern "C"
+    fn xQueueCreateMutex(
+        ucQueueType: c_uchar,
+    ) -> xQueueHandle{
+        //TOOD
+    } 
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueCreateCountingSemaphore(
+        uxCountValue: portBASE_TYPE_UNSIGNED,
+        uxInitialCount: portBASE_TYPE_UNSIGNED,
+    ) -> xQueueHandle {
+        //TODO
+    }
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueGetMutexHolder(
+        xSemaphore: xQueueHandle,
+    ) -> *mut c_void{
+        //TODO
+    }
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueTakeMutexRecursive(
+        pxMutex: xQueueHandle,
+        xBlockTime: portTickType,
+    ) -> portBASE_TYPE {
+        //TODO
+    }
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueGiveMutexRecursive(
+        pxMutex: xQueueHandle,
+    ) -> portBASE_TYPE {
+        //TODO
+    }
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueGenericCreate(
+        uxQueueLength: portBASE_TYPE_UNSIGNED,
+        uxItemSize: portBASE_TYPE_UNSIGNED,
+        ucQueueType: c_uchar,
+    ) -> xQueueHandle {
+        //TODO
+    }
+
+// configQueue_xxxx是定义在configFreeRTOS.h里的
+#[cfg(configQueue_REGISTRY_SIZE > 0)]
+#[no_mangle]
+pub extern "C"
+    fn vQueueAddToRegistry(
+        xQueue: xQueueHandle,
+        pcName: *mut c_schar,
+    ){
+        //TODO
+    }
+
+
+// # 非公开 API（仅供 FreeRTOS 内部使用）
+// 非公开但是一定要用no_mangle和pub extern修饰,这是为了能够给C语言调用,非公开的意思是此代码只能在queue内部调用,其他模块不能直接调用这些函数
+#[no_mangle]
+pub extern "C"
+    fn vQueueWaitForMessageRestricted(
+        pxQueue: xQueueHandle,
+        xTicksToWait: portTickType,
+    ){
+        //TODO
+    }
+
+#[no_mangle]
+pub extern "C"
+    fn xQueueGenericReset(
+        pxQueue: xQueueHandle,
+        xNewQueue: portBASE_TYPE,
+    ) -> portBASE_TYPE {
+        //TODO
+    }
