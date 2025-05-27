@@ -1,18 +1,21 @@
 extern crate libc;
 use libc::*;
 
+// portmacro里有部分类型的声明
 use portmacro::*;
-/**
- * Type by which queues are referenced.  For example, a call to xQueueCreate
- * returns (via a pointer parameter) an xQueueHandle variable that can then
- * be used as a parameter to xQueueSend(), xQueueReceive(), etc.
- */
+
+/*
+重写的一点小建议:
+1. 看到函数内部调用了某个神秘函数,先去c源码里搜一下这个函数的出处
+2. if 是正常的函数,那么直接调用即可, 如果是宏定义的函数, 则需要找到对应的那个通用函数, 自行替换, 这么说有点不清不楚, 到时候线下再具体说明一下吧
+*/
 type xQueueHandle = *mut c_void;
 
 /* For internal use only */
 // pub const queueSEND_TO_BACK: c_int = 0;
 // pub const queueSEND_TO_FRONT: c_int = 1;
 
+// MEMO(这两个枚举enum我想说明一下,如果简单的按照一对一的对应关系来,应该写成上边两行注释掉的样子,即pub const xxxx = xxxx,但这么写更能体现rust的特性吧(maybe),但是这么写显然有个问题就是,我并没有一味的将名称原封不动的对应过来,而是去掉了queue前缀,见仁见智,目前先这么写了,如果实在是不方便再说吧)
 #[repr(C)]
 enum sendPosition{
     BACK = 0,
