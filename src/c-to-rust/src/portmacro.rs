@@ -4,24 +4,24 @@ use libc::*;
 
 // portmacro 
 // #[warn(non_camel_case_types)]
-type portCHAR =         c_char;
-type portFLOAT =        c_float;
-type portDOUBLE =       c_double;
-type portLONG =         c_long;
-type portSHORT =        c_short;
-type portSTACK_TYPE =   c_ulong;
-type portBASE_TYPE =    portLONG;
-type portBASE_TYPE_SIGNED = portBASE_TYPE;
-type portBASE_TYPE_UNSIGNED = c_ulong;
+pub type portCHAR =         c_char;
+pub type portFLOAT =        c_float;
+pub type portDOUBLE =       c_double;
+pub type portLONG =         c_long;
+pub type portSHORT =        c_short;
+pub type portSTACK_TYPE =   c_ulong;
+pub type portBASE_TYPE =    portLONG;
+pub type portBASE_TYPE_SIGNED = portBASE_TYPE;
+pub type portBASE_TYPE_UNSIGNED = c_ulong;
 
 #[cfg(feature = "configUSE_16_BIT_TICKS")]
-type portTickType =     c_ushort;
+pub type portTickType =     c_ushort;
 
 #[cfg(feature = "configUSE_16_BIT_TICKS")]
 pub const portMAX_DELAY:portTickType = 0xffff;
 
 #[cfg(not(feature = "configUSE_16_BIT_TICKS"))]
-type portTickType =     c_ulong;
+pub type portTickType =     c_ulong;
 #[cfg(not(feature = "configUSE_16_BIT_TICKS"))]
 pub const portMAX_DELAY:portTickType = 0xffffffff;
 

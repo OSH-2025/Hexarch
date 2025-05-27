@@ -10,8 +10,8 @@ use portmacro::*;
  * 原因是rust的一些特性使得链表list的实现比较麻烦
  */
 
-#[repr]
-struct xLIST_ITEM{
+#[repr(C)]
+pub struct xLIST_ITEM{
     //如果字段不声明为 pub，则外部模块无法直接访问或修改它们：
     //这是AI告诉我的,我不确定
     pub xItemValue: portTickType,
@@ -24,8 +24,8 @@ struct xLIST_ITEM{
 
 pub type xListItem = xLIST_ITEM; // for some reason lint wants this as two separate definitions
 
-#[repr]
-struct xMINI_LIST_ITEM{
+#[repr(C)]
+pub struct xMINI_LIST_ITEM{
     pub xItemValue: portTickType,
     pub pxNext: *mut xLIST_ITEM,
     pub pxPrevious: *mut xLIST_ITEM,
