@@ -8,3 +8,4 @@ libc = "0.2.172"
 
 [feature]
 configUSE_16_BIT_TICKS = []
+configUSE_APPLICATION_TASK_TAG = []
