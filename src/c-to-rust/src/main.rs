@@ -6,4 +6,5 @@ fn main() {
     println!("Hello, world!");
     let x:c_int = 0;
     println!("{}",x);
+    let x:libc::c_schar
 }

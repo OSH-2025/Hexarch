@@ -54,7 +54,8 @@ pub extern "C"
         xTicksToWait: portTickType,
         xCopyPosition: portBASE_TYPE
     ) -> portBASE_TYPE_SIGNED {
-        //TODO
+        //TODO 
+        //author:lsy
     }
 
 #[no_mangle]
@@ -66,6 +67,7 @@ pub extern "C"
         xJustPeek: portBASE_TYPE,
     ) -> portBASE_TYPE_SIGNED{
         //TODO
+        //author:lsy
     }
  
  #[no_mangle]
@@ -74,6 +76,7 @@ pub extern "C"
         xQueue: *const c_void,
     ) -> portBASE_TYPE_UNSIGNED {
         //TODO
+        //author:lsy
     }
 
 #[no_mangle]
@@ -82,6 +85,7 @@ pub extern "C"
         pxQueue: xQueueHandle,
     ) {
         //TODO
+        //author:lsy
     }
 
 #[no_mangle]
@@ -93,6 +97,7 @@ pub extern "C"
         xCopyPosition: portBASE_TYPE,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:lsy
     }
 
 #[no_mangle]
@@ -103,6 +108,7 @@ pub extern "C"
         pxHigherPriorityTaskWoken: *mut portBASE_TYPE_SIGNED,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:yhx
     }
 
 #[no_mangle]
@@ -111,6 +117,7 @@ pub extern "C"
         pxQueue: *const c_void, //这个对应关系实在是对应不上了,只能显式使用c_void
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:yhx
     }
 
 #[no_mangle]
@@ -119,6 +126,7 @@ pub extern "C"
         pxQueue: *const c_void,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:yhx
     }
 
 #[no_mangle]
@@ -127,6 +135,7 @@ pub extern "C"
         pxQueue: *const c_void,
     ) -> portBASE_TYPE_UNSIGNED {
         //TODO
+        //author:yhx
     }
 
 #[no_mangle]
@@ -138,6 +147,7 @@ pub extern "C"
         xCopyPosition: portBASE_TYPE,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:hmh
     }
 
 #[no_mangle]
@@ -149,6 +159,7 @@ pub extern "C"
         xJustPeek: portBASE_TYPE,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:hmh
     }
 
 #[no_mangle]
@@ -159,9 +170,10 @@ pub extern "C"
         xCoRoutinePreviouslyWoken: portBASE_TYPE_SIGNED,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:hmh
     }
 
-#{no_mangle}
+#[no_mangle]
 pub extern "C"
     fn xQueueCRReceiveFromISR(
         pxQueue: xQueueHandle,
@@ -169,6 +181,7 @@ pub extern "C"
         pxTaskWoken: *mut portBASE_TYPE_SIGNED,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:hmh
     }
 
 #[no_mangle]
@@ -179,6 +192,7 @@ pub extern "C"
         xTicksToWait: portTickType,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:ly
     }
 
 #[no_mangle]
@@ -189,6 +203,7 @@ pub extern "C"
         xTicksToWait: portTickType,
     ) -> portBASE_TYPE_SIGNED {
         //TODO
+        //author:ly
     }
 
 #[no_mangle]
@@ -196,7 +211,8 @@ pub extern "C"
     fn xQueueCreateMutex(
         ucQueueType: c_uchar,
     ) -> xQueueHandle{
-        //TOOD
+        //TODO
+        //author:ly
     } 
 
 #[no_mangle]
@@ -206,6 +222,7 @@ pub extern "C"
         uxInitialCount: portBASE_TYPE_UNSIGNED,
     ) -> xQueueHandle {
         //TODO
+        //author:ly
     }
 
 #[no_mangle]
@@ -214,6 +231,7 @@ pub extern "C"
         xSemaphore: xQueueHandle,
     ) -> *mut c_void{
         //TODO
+        //author:wcr
     }
 
 #[no_mangle]
@@ -223,6 +241,7 @@ pub extern "C"
         xBlockTime: portTickType,
     ) -> portBASE_TYPE {
         //TODO
+        //author:wcr
     }
 
 #[no_mangle]
@@ -231,6 +250,7 @@ pub extern "C"
         pxMutex: xQueueHandle,
     ) -> portBASE_TYPE {
         //TODO
+        //author:wcr
     }
 
 #[no_mangle]
@@ -241,6 +261,7 @@ pub extern "C"
         ucQueueType: c_uchar,
     ) -> xQueueHandle {
         //TODO
+        //author:wcr
     }
 
 // configQueue_xxxx是定义在configFreeRTOS.h里的
@@ -252,6 +273,7 @@ pub extern "C"
         pcName: *mut c_schar,
     ){
         //TODO
+        //author:mwy
     }
 
 
@@ -264,6 +286,7 @@ pub extern "C"
         xTicksToWait: portTickType,
     ){
         //TODO
+        //author:mwy
     }
 
 #[no_mangle]
@@ -273,4 +296,5 @@ pub extern "C"
         xNewQueue: portBASE_TYPE,
     ) -> portBASE_TYPE {
         //TODO
+        //author:mwy
     }
