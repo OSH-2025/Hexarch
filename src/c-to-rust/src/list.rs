@@ -1,84 +1,139 @@
+#![no_std]
+#![allow(non_snake_case)]
+extern crate alloc;
+
 extern crate libc;
 use libc::*;
 
 // portmacro里有部分类型的声明
 use portmacro::*;
+use alloc::sync::{Arc,Weak};
+use crate::rwlock::*;
 
+use alloc::format;
+use core::clone::Clone;
+use core::default::Default;
 /**
  * 这个list的数据结构中的某些东西的定义很可能是错误的
  * 现阶段也只能是先写上了
  * 原因是rust的一些特性使得链表list的实现比较麻烦
  */
 
-#[repr(C)]
+pub type linkItem = Arc<RwLock<xLIST_ITEM>>;
+pub type weakLinkItem = Weak<RwLock<xLIST_ITEM>>;
+
+pub type linkList = Arc<RwLock<xLIST>>;
+pub type weakLinkList = Weak<RwLock<xLIST>>;
+
 pub struct xLIST_ITEM{
     //如果字段不声明为 pub，则外部模块无法直接访问或修改它们：
     //这是AI告诉我的,我不确定
     pub xItemValue: portTickType,
-    // FIXME(说实话如果要使用rust的安全性,下边这两个指针一定是不能这么定义的,只是现阶段只能先这么写着,可以参考一下去年学长的实现)
-    pub pxNext: *mut xLIST_ITEM,
-    pub pxPrevious: *mut xLIST_ITEM,
-    pub pvOwner: *mut c_void,
-    pub pvContainer: *mut c_void,
+    pub pxNext: weakLinkItem,
+    pub pxPrevious: weakLinkItem,
+    pub pvOwner: Weak<RwLock<TaskControlBlock>>,
+    pub pvContainer: Weak<RwLock<xLIST>>,
 }
 
 pub type xListItem = xLIST_ITEM; // for some reason lint wants this as two separate definitions
 
-#[repr(C)]
-pub struct xMINI_LIST_ITEM{
-    pub xItemValue: portTickType,
-    pub pxNext: *mut xLIST_ITEM,
-    pub pxPrevious: *mut xLIST_ITEM,
-}
+// pub struct xMINI_LIST_ITEM{
+//     pub xItemValue: portTickType,
+//     pub pxNext: weakLinkItem,
+//     pub pxPrevious: weakLinkItem,
+// }
 
-pub type xMiniListItem = xMINI_LIST_ITEM;
+// pub type xMiniListItem = xMINI_LIST_ITEM;
 
-#[no_mangle]
+#[derive(Clone)]
 pub struct xLIST{
     pub uxNumberOfItems: portBASE_TYPE_UNSIGNED,
-    pub pxIndex: *mut xListItem,
-    pub xListEnd: xMiniListItem,
+    pub pxIndex: weakLinkItem,
+    pub xListEnd: linkItem,
 }
 
 pub type xList = xLIST;
 
 impl xListItem{
     //对应了line 140 - 177的宏函数
-    pub const fn new() -> Self{
-        //TODO
+    pub fn new() -> Self{
+        xListItem{
+            // xItemValue是链表辅助排序的值,默认设为最大
+            xItemValue: portMAX_DELAY,
+            pxNext: Default::default(),
+            pxPrevious: Default::default(),
+            pvOwner: Default::default(),
+            pvContainer: Default::default(),
+        }
     }
 
     // FIXME(我对这里的pxOwner类型存疑,暂时这么写)
-    pub fn set_owner(&mut self, pxOwner: *mut c_void){
-        //TODO
+    pub fn set_owner(&mut self, pxOwner: Arc<RwLock<TaskControlBlock>>){
+        self.pvOwner = Arc::downgrade(&pxOwner);
     }
 
-    pub fn get_owner(self) -> *mut c_void{
-        //TODO
+    pub fn get_owner(&self) -> Weak<RwLock<TaskControlBlock>>{
+        self.pvOwner
     }
 
     pub fn set_value(&mut self, xValue: portTickType){
-        //TODO
+        self.xItemValue = xValue;
     }
 
     pub fn get_value(self) -> portTickType {
-        //TODO
+        self.xItemValue
     }
+
+    pub fn set_container(&mut self,pxContainer: Arc<RwLock<xLIST>>){
+        self.pvContainer = Arc::downgrade(&pxContainer);
+    }
+
+    pub fn remove(&mut self, xLink: weakLinkItem) -> portBASE_TYPE_UNSIGNED{
+        let list = self
+            .pvContainer
+            .upgrade()
+            .unwrap_or_else(||panic!("Container not set"));
+
+        let ret = list
+            .write()
+            .remove_item(&self,xLink);
+        set_list_item_next(&self.pxPrevious, Weak::clone(&self.pxNext));
+        set_list_item_prev(&self.pxNext,Weak::clone(&self.pxPrevious));
+        self.pvContainer = Weak::new();
+        ret
+    }
+}
+
+// 从原始listItem获取Arc包裹后的
+pub fn new_list_item(xItemValue: portTickType) -> Arc<RwLock<xLIST_ITEM>>{
+    let mut rawListItem = xListItem::new();
+    rawListItem.set_value(xItemValue);
+    let listItem : Arc<RwLock<xLIST_ITEM>> = Arc::new(RwLock::new(rawListItem));
+    listItem
 }
 
 impl xList{
     // TODO(参数有待商榷,返回值也不太确定)
-    pub const fn new() -> Self{
-        //TODO
+    pub fn new() -> Self{
+        let xListEnd: linkItem = Arc::new(RwLock::new(xListItem::new()));
+        //最后一个节点的pxNext和pxPrevious指向自身
+        (*xListEnd.wirte()).pxNext = Arc::downgrade(&xListEnd);
+        (*xListEnd.wirte()).pxPrevious = Arc::downgrade(&xListEnd);
+
+        xLIST{
+            uxNumberOfItems:0,
+            pxIndex: Arc::downgrade(&xListEnd),
+            xListEnd: xListEnd,
+        }
     }
 
     //MEMO(self参数会获取所有权,实例会被销毁; &self是不可变借用,实例仍然可用; &mut self是可变借用, 实例仍然存在,但是可变借用同时只能存在一个)
     pub fn is_empty(&self) -> bool {
-        //TODO
+        self.uxNumberOfItems == 0
     }
 
     pub fn list_length(&self) -> portBASE_TYPE_UNSIGNED {
-        //TODO
+        self.uxNumberOfItems
     }
 
     //获取下一个元素的所有者,并更新索引, c中这个宏函数自动处理了边界条件,所以这里也应该处理边界条件
@@ -98,12 +153,34 @@ impl xList{
         //TODO
     }
     
-    //FIXME(关于xListItem究竟是&mut还是*mut的问题我并不是很明白,这个可能需要仔细讨论一下,目前的想法是rust内部还是都使用安全的类型,*这种类型可能是放在和c源码对应的函数API接口中吧)
-    pub fn insert(&mut self, pxNewListItem: &mut xListItem){
-        //TODO
+    pub fn insert(&mut self, pxNewListItem: weakLinkItem){
+        let xItemValue = get_weak_item_value(&&pxNewListItem);
+
+        let itemToInsert = if xItemValue == portMAX_DELAY{
+            get_list_item_prev(&Arc::downgrade(&self.xListEnd))
+        }else{
+            let mut iterator = Arc::downgrade(&self.xListEnd);
+            loop{
+                let next = get_list_item_next(&iterator);
+                if get_weak_item_value(&next) > xItemValue{
+                    break iterator;
+                }
+                iterator = next;
+            }
+        };
+        let prev = Weak::clone(&itemToInsert);
+        let next = get_list_item_next(&itemToInsert);
+
+        //BUG(这里的链表关系存疑)
+        set_list_item_next(&pxNewListItem,Weak::clone(&next));
+        set_list_item_prev(&pxNewListItem,Weak::clone(&prev));
+        set_list_item_next(&prev, Weak::clone(&pxNewListItem));
+        set_list_item_prev(&next, Weak::clone(&pxNewListItem));
+
+        self.uxNumberOfItems += 1;
     }
 
-    pub fn insert_end(&mut self, pxNewListItem: &mut xListItem) {
+    pub fn insert_end(&mut self, pxNewListItem: weakLinkItem) {
         //TODO
     }
 
@@ -113,69 +190,40 @@ impl xList{
     }
 }
 
-
-// MEMO(下边这些是AI生成的,我复制下来是为了和大家讨论一下这件事情,就是如何安全的使用rust写好函数,然后暴露API给C的问题)
-// === C 接口封装 ===
-
-/// C 接口：创建新列表
-#[no_mangle]
-pub extern "C" fn xListCreate() -> *mut xList {
-    Box::into_raw(Box::new(xList::new()))
+fn set_list_item_next(item: &weakLinkItem, next:weakLinkItem){
+    let ownedItem: Arc<RwLock<xLIST_ITEM>> = item
+        .upgrade()
+        .unwrap_or_else(|| panic!("List item is None"));
+    (*ownedItem.write()).pxNext = next;
 }
 
-/// C 接口：判断列表是否为空
-#[no_mangle]
-pub extern "C" fn xListIsEmpty(pxList: *mut xList) -> u8 {
-    if pxList.is_null() {
-        0
-    } else {
-        unsafe {
-            (*pxList).is_empty() as u8
-        }
-    }
+fn set_list_item_prev(item: &weakLinkItem, prev:weakLinkItem){
+    let ownedItem: Arc<RwLock<xLIST_ITEM>> = item
+        .upgrade()
+        .unwrap_or_else(|| panic!("List item is None"));
+    (*ownedItem.write()).pxPrevious = prev;
 }
 
-/// C 接口：获取列表长度
-#[no_mangle]
-pub extern "C" fn uxListLength(pxList: *mut xList) -> portBASE_TYPE_UNSIGNED {
-    if pxList.is_null() {
-        0
-    } else {
-        unsafe {
-            (*pxList).list_length()
-        }
-    }
+fn get_list_item_prev(item: &weakLinkItem) -> weakLinkItem{
+    let ownedItem = item
+        .upgrade()
+        .unwrap_or_else(|| panic!("List item is None"));
+    let prev = Weak::clone(&(*ownedItem.read()).pxPrevious);
+    prev
 }
 
-/// C 接口：插入新项到列表（对应 vListInsert）
-#[no_mangle]
-pub extern "C" fn vListInsert(pxList: *mut xList, pxNewListItem: *mut xListItem) {
-    if pxList.is_null() || pxNewListItem.is_null() {
-        return;
-    }
-    unsafe {
-        (*pxList).insert(&mut *pxNewListItem);
-    }
+fn get_list_item_next(item: &weakLinkItem) -> weakLinkItem{
+    let ownedItem = item
+        .upgrade()
+        .unwrap_or_else(|| panic!("List item is None"));
+    let next = Weak::clone(&(*ownedItem.read()).pxPrevious);
+    next
 }
 
-/// C 接口：插入新项到列表尾部（对应 vListInsertEnd）
-#[no_mangle]
-pub extern "C" fn vListInsertEnd(pxList: *mut xList, pxNewListItem: *mut xListItem) {
-    if pxList.is_null() || pxNewListItem.is_null() {
-        return;
-    }
-    unsafe {
-        (*pxList).insert_end(&mut *pxNewListItem);
-    }
+pub fn listGET_LIST_ITEM_VALUE(item: &linkItem) -> portTickType{
+    (*item.read()).xItemValue
 }
 
-/// C 接口：从列表中移除项（对应 vListRemove）
-#[no_mangle]
-pub extern "C" fn vListRemove(pxList: *mut xList, pxItemToRemove: *mut xListItem) {
-    if pxList.is_null() || pxItemToRemove.is_null() {
-        return;
-    }
-    unsafe {
-        (*pxList).remove(&*pxItemToRemove);
-    }
-}
+pub fn 
+
+
