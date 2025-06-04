@@ -6,7 +6,7 @@ extern crate libc;
 use libc::*;
 
 // portmacro里有部分类型的声明
-use portmacro::*;
+// use portmacro::*;
 use alloc::sync::{Arc,Weak};
 use crate::rwlock::*;
 
