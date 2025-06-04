@@ -48,3 +48,6 @@ extern "C" {
     fn vApplicationTickHook();
     fn vApplicationIdleHook();
 }
+
+pub use crate::portable::portENTER_CRITICAL as taskENTER_CRITICAL;
+pub use crate::portable::portEXIT_CRITICAL as taskEXIT_CRITICAL;

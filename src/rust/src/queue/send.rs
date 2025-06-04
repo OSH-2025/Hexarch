@@ -1,5 +1,6 @@
 #![no_std]
-use super::definition::{xQueueHandle, QueueDefinition};
+use super::*;
+use super::{xQueueHandle, QueueDefinition};
 use crate::list::listLIST_IS_EMPTY;
 use crate::portable::{portBASE_TYPE, portTickType};
 use crate::task::{
@@ -150,8 +151,8 @@ pub extern "C" fn xQueueGenericSend(
                 let pxTCB = crate::list::listGET_OWNER_OF_HEAD_ENTRY(
                     &mut (*pxQueue).xTasksWaitingToReceive,
                 );
-                crate::list::uxListRemove(pxTCB);
-                crate::task::vTaskInternalSetTimeOutState(&mut xTimeToWake);
+                crate::list::vListRemove(pxTCB);
+                crate::task::vTaskSetTimeOutState(&mut xTimeToWake);
                 xReturn = 1; // pdPASS
             } else {
                 xReturn = 1; // pdPASS
@@ -234,7 +235,7 @@ pub extern "C" fn xQueueGenericSendFromISR(
                 let pxTCB = crate::list::listGET_OWNER_OF_HEAD_ENTRY(
                     &mut (*pxQueue).xTasksWaitingToReceive,
                 );
-                crate::list::uxListRemove(pxTCB);
+                crate::list::vListRemove(pxTCB);
                 if pxHigherPriorityTaskWoken != core::ptr::null_mut() {
                     *pxHigherPriorityTaskWoken = 1;
                 }

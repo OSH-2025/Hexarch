@@ -1,5 +1,6 @@
 #![no_std]
-use super::definition::{xQueueHandle, QueueDefinition};
+use super::*;
+use super::{xQueueHandle, QueueDefinition};
 use crate::list::listLIST_IS_EMPTY;
 use crate::portable::{portBASE_TYPE, portTickType};
 use crate::task::{

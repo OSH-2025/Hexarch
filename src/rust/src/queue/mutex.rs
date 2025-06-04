@@ -1,5 +1,6 @@
 #![no_std]
-use super::definition::xQueueHandle;
+use super::*;
+use super::xQueueHandle;
 use crate::portable::{portBASE_TYPE, portTickType};
 use crate::task::{taskENTER_CRITICAL, taskEXIT_CRITICAL, xTaskGetCurrentTaskHandle};
 use core::ffi::c_void;

@@ -1,5 +1,6 @@
 #![no_std]
-use super::definition::{xQueueHandle, QueueRegistryItem};
+use super::*;
+use super::{xQueueHandle, QueueRegistryItem};
 use crate::portable::portBASE_TYPE;
 use core::ffi::c_void;
 

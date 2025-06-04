@@ -1,5 +1,6 @@
 #![no_std]
-use super::definition::xQueueHandle;
+use super::*;
+use super::xQueueHandle;
 use crate::portable::{portBASE_TYPE, portTickType};
 use core::ffi::c_void;
 
@@ -11,7 +12,7 @@ pub extern "C" fn xQueueCreateCountingSemaphore(
     let xHandle = xQueueGenericCreate(uxMaxCount, 0, super::queueQUEUE_TYPE_COUNTING_SEMAPHORE);
 
     if !xHandle.is_null() {
-        let pxQueue = xHandle as *mut super::definition::QueueDefinition;
+        let pxQueue = xHandle as *mut super::QueueDefinition;
         unsafe {
             (*pxQueue).uxMessagesWaiting = uxInitialCount;
         }

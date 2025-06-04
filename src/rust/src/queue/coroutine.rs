@@ -1,5 +1,5 @@
 #![no_std]
-use super::definition::xQueueHandle;
+use super::*;
 use crate::portable::{portBASE_TYPE, portTickType};
 use crate::task::{taskENTER_CRITICAL, taskEXIT_CRITICAL};
 use core::ffi::c_void;
@@ -11,7 +11,7 @@ pub extern "C" fn xQueueAltGenericSend(
     xTicksToWait: portTickType,
     xCopyPosition: portBASE_TYPE,
 ) -> portBASE_TYPE {
-    let pxQueue = pxQueue as *mut super::definition::QueueDefinition;
+    let pxQueue = pxQueue as *mut super::QueueDefinition;
     let mut xReturn = 0;
 
     unsafe {
