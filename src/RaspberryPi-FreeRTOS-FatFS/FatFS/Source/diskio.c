@@ -12,13 +12,18 @@
 #include "FreeRTOS.h"
 #include <string.h>
 
+/* 添加调试输出 */
+extern void uart_puts(const char* s);
+extern void uart_putc(char c);
+extern void uart_print_num(FRESULT num);
+
 /* Definitions of physical drive number for each drive */
 #define DEV_RAM		0	/* Example: Map Ramdisk to physical drive 0 */
 //#define DEV_MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
 //#define DEV_USB		2	/* Example: Map USB MSD to physical drive 2 */
 
 #define SECTOR_SIZE 512
-#define SECTOR_COUNT 1024
+#define SECTOR_COUNT 2048
 
 #define RAMDISK_SIZE (SECTOR_SIZE * SECTOR_COUNT)
 
@@ -26,12 +31,20 @@
 static BYTE ramdisk[RAMDISK_SIZE];
 static DSTATUS Stat = STA_NOINIT; /* 磁盘状态 */
 
+/* 添加初始化标志，确保只初始化一次 */
+static int disk_initialized = 0;
+
+/* 添加调试标志，减少输出频率 */
+static int debug_output_enabled = 0;
+
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_status(BYTE pdrv) {
     if (pdrv != DEV_RAM) return STA_NOINIT;  /* 仅支持 RAM 磁盘 */
+    
+    /* 减少调试输出，避免死循环 */
     return Stat;
 }
 
@@ -40,14 +53,28 @@ DSTATUS disk_status(BYTE pdrv) {
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_initialize(BYTE pdrv) {
-    if (pdrv != DEV_RAM) return STA_NOINIT;  /* 仅支持 RAM 磁盘 */
+    if (pdrv != DEV_RAM) {
+        if (debug_output_enabled) {
+            uart_puts("disk_initialize: Invalid drive\n");
+        }
+        return STA_NOINIT;  /* 仅支持 RAM 磁盘 */
+    }
     
-    /* 初始化 RAM 磁盘内容为 0 */
-    memset(ramdisk, 0, RAMDISK_SIZE);
+    /* 只在第一次初始化时清零RAM磁盘 */
+    if (!disk_initialized) {
+        if (debug_output_enabled) {
+            uart_puts("disk_initialize: First initialization, clearing RAM disk\n");
+        }
+        memset(ramdisk, 0, RAMDISK_SIZE);
+        disk_initialized = 1;
+    }
     
     /* 清除所有状态标志，确保不会有写保护或其他状态 */
     Stat = 0;
     
+    if (debug_output_enabled) {
+        uart_puts("disk_initialize: Success\n");
+    }
     return Stat;  /* 总是返回成功 */
 }
 
@@ -56,8 +83,14 @@ DSTATUS disk_initialize(BYTE pdrv) {
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read(BYTE pdrv, BYTE* buff, LBA_t sector, UINT count) {
-    if (pdrv != DEV_RAM) return RES_PARERR;  /* 检查参数 */
-    if (Stat & STA_NOINIT) return RES_NOTRDY;  /* 驱动器未初始化 */
+    if (pdrv != DEV_RAM) {
+        return RES_PARERR;  /* 检查参数 */
+    }
+    
+    if (Stat & STA_NOINIT) {
+        return RES_NOTRDY;  /* 驱动器未初始化 */
+    }
+    
     if (sector >= SECTOR_COUNT || sector + count > SECTOR_COUNT) {
         return RES_PARERR;  /* 超出范围 */
     }
@@ -73,8 +106,14 @@ DRESULT disk_read(BYTE pdrv, BYTE* buff, LBA_t sector, UINT count) {
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_write(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count) {
-    if (pdrv != DEV_RAM) return RES_PARERR;  /* 检查参数 */
-    if (Stat & STA_NOINIT) return RES_NOTRDY;  /* 驱动器未初始化 */
+    if (pdrv != DEV_RAM) {
+        return RES_PARERR;  /* 检查参数 */
+    }
+    
+    if (Stat & STA_NOINIT) {
+        return RES_NOTRDY;  /* 驱动器未初始化 */
+    }
+    
     if (sector >= SECTOR_COUNT || sector + count > SECTOR_COUNT) {
         return RES_PARERR;  /* 超出范围 */
     }
@@ -92,8 +131,13 @@ DRESULT disk_write(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count) {
 DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
     DRESULT res = RES_PARERR;
     
-    if (pdrv != DEV_RAM) return RES_PARERR;  /* 检查参数 */
-    if (Stat & STA_NOINIT) return RES_NOTRDY;  /* 驱动器未初始化 */
+    if (pdrv != DEV_RAM) {
+        return RES_PARERR;  /* 检查参数 */
+    }
+    
+    if (Stat & STA_NOINIT) {
+        return RES_NOTRDY;  /* 驱动器未初始化 */
+    }
     
     switch (cmd) {
         case CTRL_SYNC:        /* 确保写入完成 */
@@ -122,3 +166,4 @@ DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
     
     return res;
 }
+

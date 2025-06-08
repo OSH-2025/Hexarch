@@ -198,8 +198,8 @@
 /* This set of options configures the range of sector size to be supported. (512,
 /  1024, 2048 or 4096) Always set both 512 for most systems, generic memory card and
 /  harddisk, but a larger value may be required for on-board flash memory and some
-/  type of optical media. When FF_MAX_SS is larger than FF_MIN_SS, FatFs is
-/  configured for variable sector size mode and disk_ioctl() needs to implement
+/  type of optical media. When FF_MAX_SS is larger than FF_MIN_SS, FatFs is configured
+/  for variable sector size mode and disk_ioctl() function needs to implement
 /  GET_SECTOR_SIZE command. */
 
 
@@ -209,14 +209,14 @@
 
 
 #define FF_MIN_GPT		0x10000000
-/* Minimum number of sectors to switch GPT as partitioning format in f_mkfs() and 
-/  f_fdisk(). 2^32 sectors maximum. This option has no effect when FF_LBA64 == 0. */
+/* Minimum number of sectors to switch GPT as partitioning format in f_mkfs and
+/  f_fdisk function. 0x100000000 max. This option has no effect when FF_LBA64 == 0. */
 
 
 #define FF_USE_TRIM		0
 /* This option switches support for ATA-TRIM. (0:Disable or 1:Enable)
-/  To enable this feature, also CTRL_TRIM command should be implemented to
-/  the disk_ioctl(). */
+/  To enable Trim function, also CTRL_TRIM command should be implemented to the
+/  disk_ioctl() function. */
 
 
 
@@ -224,7 +224,7 @@
 / System Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_FS_TINY		1
+#define FF_FS_TINY		0
 /* This option switches tiny buffer configuration. (0:Normal or 1:Tiny)
 /  At the tiny configuration, size of file object (FIL) is shrinked FF_MAX_SS bytes.
 /  Instead of private sector buffer eliminated from the file object, common sector
@@ -238,22 +238,22 @@
 
 
 #define FF_FS_NORTC		1
-#define FF_NORTC_MON	11
+#define FF_NORTC_MON	1
 #define FF_NORTC_MDAY	1
-#define FF_NORTC_YEAR	2024
-/* The option FF_FS_NORTC switches timestamp feature. If the system does not have
-/  an RTC or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable the
-/  timestamp feature. Every object modified by FatFs will have a fixed timestamp
+#define FF_NORTC_YEAR	2023
+/* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
+/  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
+/  the timestamp function. Every object modified by FatFs will have a fixed timestamp
 /  defined by FF_NORTC_MON, FF_NORTC_MDAY and FF_NORTC_YEAR in local time.
-/  To enable timestamp function (FF_FS_NORTC = 0), get_fattime() need to be added
-/  to the project to read current time form real-time clock. FF_NORTC_MON,
+/  To enable timestamp function (FF_FS_NORTC = 0), get_fattime() function need to be
+/  added to the project to read current time form real-time clock. FF_NORTC_MON,
 /  FF_NORTC_MDAY and FF_NORTC_YEAR have no effect.
 /  These options have no effect in read-only configuration (FF_FS_READONLY = 1). */
 
 
 #define FF_FS_NOFSINFO	0
 /* If you need to know correct free space on the FAT32 volume, set bit 0 of this
-/  option, and f_getfree() at the first time after volume mount will force
+/  option, and f_getfree() function at first time after volume mount will force
 /  a full FAT scan. Bit 1 controls the use of last allocated cluster number.
 /
 /  bit0=0: Use free cluster count in the FSINFO if available.
@@ -294,3 +294,4 @@
 
 
 /*--- End of configuration options ---*/
+

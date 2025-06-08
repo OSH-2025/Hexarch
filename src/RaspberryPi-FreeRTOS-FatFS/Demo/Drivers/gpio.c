@@ -99,38 +99,45 @@ typedef struct {
 	//Ignoring the reserved and test bytes
 } BCM2835_GPIO_REGS;
 
-volatile BCM2835_GPIO_REGS * const pRegs = (BCM2835_GPIO_REGS *) (0x20200000);
+/* 对于QEMU versatilepb平台，我们使用模拟GPIO */
+/* 原始树莓派GPIO地址不适用于versatilepb */
+/* volatile BCM2835_GPIO_REGS * const pRegs = (BCM2835_GPIO_REGS *) (0x20200000); */
 
+/* 虚拟GPIO状态，用于模拟GPIO操作 */
+static unsigned long virtual_gpio_state[2] = {0, 0};
+static unsigned long virtual_gpio_function[6] = {0, 0, 0, 0, 0, 0};
 
 void SetGpioFunction(unsigned int pinNum, unsigned int funcNum) {
-
 	int offset = pinNum / 10;
-
-	unsigned long val = pRegs->GPFSEL[offset];	// Read in the original register value.
-
 	int item = pinNum % 10;
-	val &= ~(0x7 << (item * 3));
-	val |= ((funcNum & 0x7) << (item * 3));
-	pRegs->GPFSEL[offset] = val;
+	
+	/* 修改虚拟GPIO功能状态 */
+	virtual_gpio_function[offset] &= ~(0x7 << (item * 3));
+	virtual_gpio_function[offset] |= ((funcNum & 0x7) << (item * 3));
 }
 
 void SetGpioDirection(unsigned int pinNum, enum GPIO_DIR dir) {
-	SetGpioFunction(pinNum,dir);
+	SetGpioFunction(pinNum, dir);
 }
 
 void SetGpio(unsigned int pinNum, unsigned int pinVal) {
-	unsigned long offset=pinNum/32;
-	unsigned long mask=(1<<(pinNum%32));
-
-	if(pinVal) {
-		pRegs->GPSET[offset]|=mask;
+	unsigned long offset = pinNum / 32;
+	unsigned long mask = (1 << (pinNum % 32));
+	
+	/* 修改虚拟GPIO状态 */
+	if (pinVal) {
+		virtual_gpio_state[offset] |= mask;
 	} else {
-		pRegs->GPCLR[offset]|=mask;
+		virtual_gpio_state[offset] &= ~mask;
 	}
 }
 
 int ReadGpio(unsigned int pinNum) {
-	return ((pRegs->GPLEV[pinNum/32])>>(pinNum%32))&1;
+	unsigned long offset = pinNum / 32;
+	unsigned long mask = (1 << (pinNum % 32));
+	
+	/* 读取虚拟GPIO状态 */
+	return (virtual_gpio_state[offset] & mask) ? 1 : 0;
 }
 
 void EnableGpioDetect(unsigned int pinNum, enum DETECT_TYPE type)
@@ -140,22 +147,22 @@ void EnableGpioDetect(unsigned int pinNum, enum DETECT_TYPE type)
 	
 	switch(type) {
 	case DETECT_RISING:
-		pRegs->GPREN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_FALLING:
-		pRegs->GPFEN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_HIGH:
-		pRegs->GPHEN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_LOW:
-		pRegs->GPLEN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_RISING_ASYNC:
-		pRegs->GPAREN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_FALLING_ASYNC:
-		pRegs->GPAFEN[offset]|=mask;
+		virtual_gpio_function[offset]|=mask;
 		break;
 	case DETECT_NONE:
 		break;
@@ -169,22 +176,22 @@ void DisableGpioDetect(unsigned int pinNum, enum DETECT_TYPE type)
 	
 	switch(type) {
 	case DETECT_RISING:
-		pRegs->GPREN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_FALLING:
-		pRegs->GPFEN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_HIGH:
-		pRegs->GPHEN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_LOW:
-		pRegs->GPLEN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_RISING_ASYNC:
-		pRegs->GPAREN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_FALLING_ASYNC:
-		pRegs->GPAFEN[offset]&=mask;
+		virtual_gpio_function[offset]&=mask;
 		break;
 	case DETECT_NONE:
 		break;
@@ -196,5 +203,7 @@ void ClearGpioInterrupt(unsigned int pinNum)
 	unsigned long mask=(1<<(pinNum%32));
 	unsigned long offset=pinNum/32;
 
-	pRegs->GPEDS[offset]=mask;
+	/* 清除虚拟GPIO中断标志 */
+	virtual_gpio_state[offset] &= ~mask;
 }
+

@@ -56,7 +56,7 @@ LOAD /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffun
                 0x00000000000100a4                __module_entries_end = .
                 0x00000000000100a4                __module_entries_size = SIZEOF (.module_entries)
 
-.text           0x0000000000020000     0xb7fc
+.text           0x0000000000020000     0xbac8
  *(.text)
  .text          0x0000000000020000      0x344 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
                 0x0000000000020000                pxPortInitialiseStack
@@ -127,177 +127,177 @@ LOAD /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffun
                 0x0000000000023650                irqRegister
                 0x00000000000236b4                irqEnable
                 0x0000000000023788                irqDisable
- .text          0x0000000000023868      0x5d8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .text          0x0000000000023868      0x520 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
                 0x0000000000023868                SetGpioFunction
-                0x0000000000023944                SetGpioDirection
-                0x0000000000023978                SetGpio
-                0x0000000000023a30                ReadGpio
-                0x0000000000023a80                EnableGpioDetect
-                0x0000000000023c30                DisableGpioDetect
-                0x0000000000023de8                ClearGpioInterrupt
- .text          0x0000000000023e40      0x4ac /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
-                0x0000000000023e40                pvPortMalloc
-                0x0000000000024008                vPortFree
-                0x0000000000024084                xPortGetFreeHeapSize
-                0x00000000000240a8                vPortInitialiseBlocks
- .text          0x00000000000242ec       0x18 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
- .text          0x0000000000024304      0x848 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
-                0x0000000000024304                uart_putc
-                0x0000000000024354                uart_puts
-                0x00000000000243a0                uart_print_num
-                0x000000000002447c                print_fatfs_error
-                0x0000000000024664                uart_init
-                0x000000000002467c                task1
-                0x00000000000246b8                task2
-                0x00000000000246fc                fatfs_task
-                0x0000000000024a68                main
- .text          0x0000000000024b4c     0x6318 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
-                0x000000000002788c                f_mount
-                0x0000000000027988                f_open
-                0x0000000000027e50                f_read
-                0x000000000002822c                f_write
-                0x0000000000028730                f_sync
-                0x0000000000028888                f_close
-                0x00000000000288f8                f_lseek
-                0x0000000000028cc8                f_opendir
-                0x0000000000028e0c                f_closedir
-                0x0000000000028e60                f_readdir
-                0x0000000000028f38                f_stat
-                0x0000000000028fe4                f_getfree
-                0x000000000002926c                f_truncate
-                0x000000000002941c                f_unlink
-                0x00000000000295ec                f_mkdir
-                0x000000000002986c                f_rename
-                0x0000000000029fd0                f_mkfs
- .text          0x000000000002ae64      0x2fc /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
-                0x000000000002ae64                disk_status
-                0x000000000002aea8                disk_initialize
-                0x000000000002af08                disk_read
-                0x000000000002afbc                disk_write
-                0x000000000002b070                disk_ioctl
- .text          0x000000000002b160       0x20 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
-                0x000000000002b160                get_fattime
- .text          0x000000000002b180        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .text          0x000000000002b180      0x114 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
-                0x000000000002b180                __udivsi3
-                0x000000000002b180                __aeabi_uidiv
-                0x000000000002b274                __aeabi_uidivmod
- .text          0x000000000002b294        0x4 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
-                0x000000000002b294                __aeabi_ldiv0
-                0x000000000002b294                __aeabi_idiv0
- .text          0x000000000002b298       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
-                0x000000000002b298                memcmp
- .text          0x000000000002b344      0x120 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
-                0x000000000002b344                memcpy
- .text          0x000000000002b464      0x11c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
-                0x000000000002b464                memset
- .text          0x000000000002b580      0x150 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
-                0x000000000002b580                strchr
- .text          0x000000000002b6d0       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
-                0x000000000002b6d0                strlen
- .text          0x000000000002b730       0xcc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
-                0x000000000002b730                strncpy
+                0x0000000000023940                SetGpioDirection
+                0x0000000000023974                SetGpio
+                0x0000000000023a10                ReadGpio
+                0x0000000000023a78                EnableGpioDetect
+                0x0000000000023bc8                DisableGpioDetect
+                0x0000000000023d20                ClearGpioInterrupt
+ .text          0x0000000000023d88      0x4ac /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+                0x0000000000023d88                pvPortMalloc
+                0x0000000000023f50                vPortFree
+                0x0000000000023fcc                xPortGetFreeHeapSize
+                0x0000000000023ff0                vPortInitialiseBlocks
+ .text          0x0000000000024234       0x18 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
+ .text          0x000000000002424c      0x8e4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+                0x000000000002424c                uart_putc
+                0x000000000002429c                uart_puts
+                0x00000000000242e8                uart_print_num
+                0x00000000000243c4                print_fatfs_error
+                0x00000000000245ac                uart_init
+                0x00000000000245c4                task1
+                0x0000000000024600                task2
+                0x0000000000024644                fatfs_task
+                0x0000000000024a4c                main
+ .text          0x0000000000024b30     0x6588 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+                0x0000000000027870                f_mount
+                0x000000000002796c                f_open
+                0x0000000000027e80                f_read
+                0x00000000000282e4                f_write
+                0x000000000002880c                f_sync
+                0x00000000000289c4                f_close
+                0x0000000000028a34                f_lseek
+                0x0000000000028eac                f_opendir
+                0x0000000000028ff0                f_closedir
+                0x0000000000029044                f_readdir
+                0x000000000002911c                f_stat
+                0x00000000000291c8                f_getfree
+                0x0000000000029450                f_truncate
+                0x0000000000029670                f_unlink
+                0x0000000000029840                f_mkdir
+                0x0000000000029ac0                f_rename
+                0x000000000002a224                f_mkfs
+ .text          0x000000000002b0b8      0x374 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+                0x000000000002b0b8                disk_status
+                0x000000000002b0fc                disk_initialize
+                0x000000000002b1d4                disk_read
+                0x000000000002b288                disk_write
+                0x000000000002b33c                disk_ioctl
+ .text          0x000000000002b42c       0x20 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+                0x000000000002b42c                get_fattime
+ .text          0x000000000002b44c        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .text          0x000000000002b44c      0x114 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+                0x000000000002b44c                __udivsi3
+                0x000000000002b44c                __aeabi_uidiv
+                0x000000000002b540                __aeabi_uidivmod
+ .text          0x000000000002b560        0x4 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+                0x000000000002b560                __aeabi_ldiv0
+                0x000000000002b560                __aeabi_idiv0
+ .text          0x000000000002b564       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+                0x000000000002b564                memcmp
+ .text          0x000000000002b610      0x120 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+                0x000000000002b610                memcpy
+ .text          0x000000000002b730      0x11c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+                0x000000000002b730                memset
+ .text          0x000000000002b84c      0x150 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+                0x000000000002b84c                strchr
+ .text          0x000000000002b99c       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+                0x000000000002b99c                strlen
+ .text          0x000000000002b9fc       0xcc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+                0x000000000002b9fc                strncpy
 
-.rodata         0x000000000002b7fc      0x6e2
- .rodata        0x000000000002b7fc        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
- .rodata        0x000000000002b800        0x5 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
- *fill*         0x000000000002b805        0x3 
- .rodata        0x000000000002b808        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .rodata        0x000000000002b80c        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
-                0x000000000002b80c                pRegs
- .rodata        0x000000000002b810        0x8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
- .rodata        0x000000000002b818      0x5c6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- *fill*         0x000000000002bdde        0x2 
- .rodata        0x000000000002bde0       0xfe /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+.rodata         0x000000000002bac8      0x772
+ .rodata        0x000000000002bac8        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .rodata        0x000000000002bacc        0x5 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
+ *fill*         0x000000000002bad1        0x3 
+ .rodata        0x000000000002bad4        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
+ .rodata        0x000000000002bad8        0x8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .rodata        0x000000000002bae0      0x5e2 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ *fill*         0x000000000002c0c2        0x2 
+ .rodata        0x000000000002c0c4       0xfe /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ *fill*         0x000000000002c1c2        0x2 
+ .rodata        0x000000000002c1c4       0x76 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
 
-.glue_7         0x000000000002bee0        0x0
- .glue_7        0x000000000002bee0        0x0 linker stubs
+.glue_7         0x000000000002c23c        0x0
+ .glue_7        0x000000000002c23c        0x0 linker stubs
 
-.glue_7t        0x000000000002bee0        0x0
- .glue_7t       0x000000000002bee0        0x0 linker stubs
+.glue_7t        0x000000000002c23c        0x0
+ .glue_7t       0x000000000002c23c        0x0 linker stubs
 
-.vfp11_veneer   0x000000000002bee0        0x0
- .vfp11_veneer  0x000000000002bee0        0x0 linker stubs
+.vfp11_veneer   0x000000000002c23c        0x0
+ .vfp11_veneer  0x000000000002c23c        0x0 linker stubs
 
-.v4_bx          0x000000000002bee0        0x0
- .v4_bx         0x000000000002bee0        0x0 linker stubs
+.v4_bx          0x000000000002c23c        0x0
+ .v4_bx         0x000000000002c23c        0x0 linker stubs
 
-.iplt           0x000000000002bee0        0x0
- .iplt          0x000000000002bee0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+.iplt           0x000000000002c23c        0x0
+ .iplt          0x000000000002c23c        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
 
-.rel.dyn        0x000000000002bee0        0x0
- .rel.iplt      0x000000000002bee0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+.rel.dyn        0x000000000002c23c        0x0
+ .rel.iplt      0x000000000002c23c        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
 
-.data           0x000000000002bee0        0xd
+.data           0x000000000002c23c        0xd
  *(.data)
- .data          0x000000000002bee0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
- .data          0x000000000002bee0        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
-                0x000000000002bee0                ulCriticalNesting
- .data          0x000000000002bee4        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
- .data          0x000000000002bee4        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/list.o
- .data          0x000000000002bee4        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
- .data          0x000000000002bee4        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
- .data          0x000000000002bee8        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .data          0x000000000002bee8        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
- .data          0x000000000002bee8        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
- .data          0x000000000002beec        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
- .data          0x000000000002beec        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .data          0x000000000002beec        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- .data          0x000000000002beec        0x1 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .data          0x000000000002beed        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .data          0x000000000002beed        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .data          0x000000000002beed        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .data          0x000000000002c23c        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .data          0x000000000002c23c        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+                0x000000000002c23c                ulCriticalNesting
+ .data          0x000000000002c240        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
+ .data          0x000000000002c240        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/list.o
+ .data          0x000000000002c240        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
+ .data          0x000000000002c240        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
+ .data          0x000000000002c244        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
+ .data          0x000000000002c244        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .data          0x000000000002c244        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .data          0x000000000002c248        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
+ .data          0x000000000002c248        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ .data          0x000000000002c248        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .data          0x000000000002c248        0x1 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .data          0x000000000002c249        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .data          0x000000000002c249        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .data          0x000000000002c249        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
-.igot.plt       0x000000000002bef0        0x0
- .igot.plt      0x000000000002bef0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+.igot.plt       0x000000000002c24c        0x0
+ .igot.plt      0x000000000002c24c        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
 
-.bss            0x000000000002bef0    0x813e8
-                0x000000000002bef0                __bss_start = .
+.bss            0x000000000002c250   0x101410
+                0x000000000002c250                __bss_start = .
  *(.bss)
- .bss           0x000000000002bef0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
- .bss           0x000000000002bef0        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
-                0x000000000002bef0                g_bStarted
- .bss           0x000000000002bef4       0x80 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
-                0x000000000002bf60                pxCurrentCoRoutine
- .bss           0x000000000002bf74        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/list.o
- .bss           0x000000000002bf74        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
- .bss           0x000000000002bf74      0x100 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
-                0x000000000002bf74                pxCurrentTCB
- .bss           0x000000000002c074      0x24c /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .bss           0x000000000002c2c0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
- .bss           0x000000000002c2c0     0x1010 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
-                0x000000000002d2cc                allocated
- .bss           0x000000000002d2d0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
- .bss           0x000000000002d2d0        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .bss           0x000000000002d2d0        0x6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- *fill*         0x000000000002d2d6        0x2 
- .bss           0x000000000002d2d8    0x80000 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .bss           0x00000000000ad2d8        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .bss           0x00000000000ad2d8        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .bss           0x00000000000ad2d8        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .bss           0x000000000002c250        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
+ .bss           0x000000000002c250        0x4 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
+                0x000000000002c250                g_bStarted
+ .bss           0x000000000002c254       0x80 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
+                0x000000000002c2c0                pxCurrentCoRoutine
+ .bss           0x000000000002c2d4        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/list.o
+ .bss           0x000000000002c2d4        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
+ .bss           0x000000000002c2d4      0x100 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
+                0x000000000002c2d4                pxCurrentTCB
+ .bss           0x000000000002c3d4      0x24c /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
+ .bss           0x000000000002c620       0x20 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .bss           0x000000000002c640     0x1010 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+                0x000000000002d64c                allocated
+ .bss           0x000000000002d650        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/startup.o
+ .bss           0x000000000002d650        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ .bss           0x000000000002d650        0x6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ *fill*         0x000000000002d656        0x2 
+ .bss           0x000000000002d658   0x100008 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .bss           0x000000000012d660        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .bss           0x000000000012d660        0x0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .bss           0x000000000012d660        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
  *(.bss.*)
-                0x00000000000ad2d8                __bss_end = .
+                0x000000000012d660                __bss_end = .
                 0x0000000008020000                _estack = (ORIGIN (RAM) + LENGTH (RAM))
 LOAD /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a
 LOAD /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a
 OUTPUT(kernel.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x0000000000000000     0x5aa4
+.debug_info     0x0000000000000000     0x59a5
  .debug_info    0x0000000000000000      0x216 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
  .debug_info    0x0000000000000216      0x19c /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
  .debug_info    0x00000000000003b2      0x4af /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
@@ -305,23 +305,23 @@ LOAD linker stubs
  .debug_info    0x0000000000000b06      0x788 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
  .debug_info    0x000000000000128e      0xdd6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
  .debug_info    0x0000000000002064      0x2db /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .debug_info    0x000000000000233f      0x438 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
- .debug_info    0x0000000000002777      0x2e9 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
- .debug_info    0x0000000000002a60      0x701 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .debug_info    0x0000000000003161     0x1e18 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- .debug_info    0x0000000000004f79      0x2b2 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .debug_info    0x000000000000522b       0xa8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .debug_info    0x00000000000052d3       0x6b /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .debug_info    0x000000000000533e       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .debug_info    0x0000000000005364       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .debug_info    0x000000000000538a      0x138 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .debug_info    0x00000000000054c2      0x15c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .debug_info    0x000000000000561e      0x13d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .debug_info    0x000000000000575b      0x13a /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .debug_info    0x0000000000005895       0xbc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .debug_info    0x0000000000005951      0x153 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_info    0x000000000000233f      0x2eb /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .debug_info    0x000000000000262a      0x2e9 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_info    0x0000000000002913      0x71d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ .debug_info    0x0000000000003030     0x1e26 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .debug_info    0x0000000000004e56      0x2d6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .debug_info    0x000000000000512c       0xa8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .debug_info    0x00000000000051d4       0x6b /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .debug_info    0x000000000000523f       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .debug_info    0x0000000000005265       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x000000000000528b      0x138 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .debug_info    0x00000000000053c3      0x15c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .debug_info    0x000000000000551f      0x13d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_info    0x000000000000565c      0x13a /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .debug_info    0x0000000000005796       0xbc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .debug_info    0x0000000000005852      0x153 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
-.debug_abbrev   0x0000000000000000     0x15d8
+.debug_abbrev   0x0000000000000000     0x1554
  .debug_abbrev  0x0000000000000000      0x133 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
  .debug_abbrev  0x0000000000000133       0xe5 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
  .debug_abbrev  0x0000000000000218      0x1a1 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
@@ -329,21 +329,21 @@ LOAD linker stubs
  .debug_abbrev  0x0000000000000483      0x14a /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
  .debug_abbrev  0x00000000000005cd      0x20b /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
  .debug_abbrev  0x00000000000007d8      0x145 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .debug_abbrev  0x000000000000091d      0x167 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
- .debug_abbrev  0x0000000000000a84      0x1bd /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
- .debug_abbrev  0x0000000000000c41      0x1e5 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .debug_abbrev  0x0000000000000e26      0x225 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- .debug_abbrev  0x000000000000104b      0x11a /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .debug_abbrev  0x0000000000001165       0x55 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .debug_abbrev  0x00000000000011ba       0x26 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .debug_abbrev  0x00000000000011e0       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .debug_abbrev  0x00000000000011f4       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .debug_abbrev  0x0000000000001208       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .debug_abbrev  0x0000000000001295       0xc7 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .debug_abbrev  0x000000000000135c       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .debug_abbrev  0x0000000000001410       0x94 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .debug_abbrev  0x00000000000014a4       0x79 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .debug_abbrev  0x000000000000151d       0xbb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_abbrev  0x000000000000091d       0xfd /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .debug_abbrev  0x0000000000000a1a      0x1bd /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_abbrev  0x0000000000000bd7      0x1cb /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ .debug_abbrev  0x0000000000000da2      0x225 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .debug_abbrev  0x0000000000000fc7      0x11a /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .debug_abbrev  0x00000000000010e1       0x55 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .debug_abbrev  0x0000000000001136       0x26 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .debug_abbrev  0x000000000000115c       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x0000000000001170       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000000000001184       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .debug_abbrev  0x0000000000001211       0xc7 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .debug_abbrev  0x00000000000012d8       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_abbrev  0x000000000000138c       0x94 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .debug_abbrev  0x0000000000001420       0x79 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .debug_abbrev  0x0000000000001499       0xbb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
 .debug_aranges  0x0000000000000000      0x2b8
  .debug_aranges
@@ -391,7 +391,7 @@ LOAD linker stubs
  .debug_aranges
                 0x0000000000000298       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
-.debug_line     0x0000000000000000     0x4e7d
+.debug_line     0x0000000000000000     0x4f74
  .debug_line    0x0000000000000000      0x1e0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
  .debug_line    0x00000000000001e0       0xed /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
  .debug_line    0x00000000000002cd      0x302 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
@@ -399,23 +399,23 @@ LOAD linker stubs
  .debug_line    0x00000000000007d2      0x545 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/queue.o
  .debug_line    0x0000000000000d17      0x8a2 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
  .debug_line    0x00000000000015b9      0x185 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
- .debug_line    0x000000000000173e      0x187 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
- .debug_line    0x00000000000018c5      0x22d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
- .debug_line    0x0000000000001af2      0x2c6 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .debug_line    0x0000000000001db8     0x2447 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- .debug_line    0x00000000000041ff      0x1af /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .debug_line    0x00000000000043ae       0xbf /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .debug_line    0x000000000000446d       0x1d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
- .debug_line    0x000000000000448a       0x74 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .debug_line    0x00000000000044fe       0x57 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .debug_line    0x0000000000004555      0x171 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .debug_line    0x00000000000046c6      0x1ba /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .debug_line    0x0000000000004880      0x1d5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .debug_line    0x0000000000004a55      0x1be /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .debug_line    0x0000000000004c13       0xeb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .debug_line    0x0000000000004cfe      0x17f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_line    0x000000000000173e      0x17d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+ .debug_line    0x00000000000018bb      0x22d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_line    0x0000000000001ae8      0x2fa /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+ .debug_line    0x0000000000001de2     0x2509 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .debug_line    0x00000000000042eb      0x1b8 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .debug_line    0x00000000000044a3       0xc1 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .debug_line    0x0000000000004564       0x1d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .debug_line    0x0000000000004581       0x74 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .debug_line    0x00000000000045f5       0x57 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x000000000000464c      0x171 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .debug_line    0x00000000000047bd      0x1ba /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .debug_line    0x0000000000004977      0x1d5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_line    0x0000000000004b4c      0x1be /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .debug_line    0x0000000000004d0a       0xeb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .debug_line    0x0000000000004df5      0x17f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
-.debug_str      0x0000000000000000     0x2191
+.debug_str      0x0000000000000000     0x210b
  .debug_str     0x0000000000000000      0x1ee /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
                                         0x235 (size before relaxing)
  .debug_str     0x00000000000001ee       0xef /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
@@ -428,35 +428,35 @@ LOAD linker stubs
                                         0x531 (size before relaxing)
  .debug_str     0x0000000000000aae      0x648 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/tasks.o
                                         0x913 (size before relaxing)
- .debug_str     0x00000000000010f6      0x166 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
+ .debug_str     0x00000000000010f6      0x15e /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/irq.o
                                         0x21b (size before relaxing)
- .debug_str     0x000000000000125c      0x240 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
-                                        0x301 (size before relaxing)
- .debug_str     0x000000000000149c      0x1d3 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
+ .debug_str     0x0000000000001254      0x18a /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
+                                        0x245 (size before relaxing)
+ .debug_str     0x00000000000013de      0x1d3 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
                                         0x305 (size before relaxing)
- .debug_str     0x000000000000166f      0x320 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
-                                        0x464 (size before relaxing)
- .debug_str     0x000000000000198f      0x3bb /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .debug_str     0x00000000000015b1      0x322 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
+                                        0x466 (size before relaxing)
+ .debug_str     0x00000000000018d3      0x3bb /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
                                         0x770 (size before relaxing)
- .debug_str     0x0000000000001d4a       0x98 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
-                                        0x231 (size before relaxing)
- .debug_str     0x0000000000001de2       0x58 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .debug_str     0x0000000000001c8e       0xce /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+                                        0x257 (size before relaxing)
+ .debug_str     0x0000000000001d5c       0x58 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
                                         0x180 (size before relaxing)
- .debug_str     0x0000000000001e3a       0x4d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
+ .debug_str     0x0000000000001db4       0x4d /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffunicode.o
                                         0x15a (size before relaxing)
- .debug_str     0x0000000000001e87       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .debug_str     0x0000000000001f14       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
- .debug_str     0x0000000000001f14       0xe5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .debug_str     0x0000000000001e01       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .debug_str     0x0000000000001e8e       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_dvmd_tls.o)
+ .debug_str     0x0000000000001e8e       0xe5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
                                         0x181 (size before relaxing)
- .debug_str     0x0000000000001ff9       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .debug_str     0x0000000000001f73       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
                                         0x1ba (size before relaxing)
- .debug_str     0x00000000000020ad       0x3f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_str     0x0000000000002027       0x3f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
                                         0x195 (size before relaxing)
- .debug_str     0x00000000000020ec       0x32 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .debug_str     0x0000000000002066       0x32 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
                                         0x18c (size before relaxing)
- .debug_str     0x000000000000211e       0x3f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .debug_str     0x0000000000002098       0x3f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
                                         0x193 (size before relaxing)
- .debug_str     0x000000000000215d       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_str     0x00000000000020d7       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
                                         0x1ab (size before relaxing)
 
 .comment        0x0000000000000000       0x33
@@ -531,7 +531,7 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000000000003a0       0x2a /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
-.debug_frame    0x0000000000000000     0x1604
+.debug_frame    0x0000000000000000     0x1608
  .debug_frame   0x0000000000000000       0xac /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
  .debug_frame   0x00000000000000ac       0x90 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
  .debug_frame   0x000000000000013c       0xf0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FreeRTOS/Source/croutine.o
@@ -542,16 +542,16 @@ LOAD linker stubs
  .debug_frame   0x0000000000000a2c       0xf0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/Drivers/gpio.o
  .debug_frame   0x0000000000000b1c       0xd0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build//FreeRTOS/Source/portable/MemMang/heap_4.o
  .debug_frame   0x0000000000000bec      0x128 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/Demo/main.o
- .debug_frame   0x0000000000000d14      0x690 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
- .debug_frame   0x00000000000013a4       0xb0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
- .debug_frame   0x0000000000001454       0x30 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
- .debug_frame   0x0000000000001484       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
- .debug_frame   0x00000000000014a4       0x38 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
- .debug_frame   0x00000000000014dc       0x38 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
- .debug_frame   0x0000000000001514       0x48 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
- .debug_frame   0x000000000000155c       0x48 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
- .debug_frame   0x00000000000015a4       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
- .debug_frame   0x00000000000015c4       0x40 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_frame   0x0000000000000d14      0x694 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ff.o
+ .debug_frame   0x00000000000013a8       0xb0 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/diskio.o
+ .debug_frame   0x0000000000001458       0x30 /home/lunacy/Hexarch/src/RaspberryPi-FreeRTOS-FatFS/build/FatFS/Source/ffsystem.o
+ .debug_frame   0x0000000000001488       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/libgcc.a(_udivsi3.o)
+ .debug_frame   0x00000000000014a8       0x38 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)
+ .debug_frame   0x00000000000014e0       0x38 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x0000000000001518       0x48 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_frame   0x0000000000001560       0x48 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strchr.o)
+ .debug_frame   0x00000000000015a8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strlen-stub.o)
+ .debug_frame   0x00000000000015c8       0x40 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-strncpy.o)
 
 .debug_loc      0x0000000000000000      0xac9
  .debug_loc     0x0000000000000000      0x1c1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/libc.a(lib_a-memcmp.o)

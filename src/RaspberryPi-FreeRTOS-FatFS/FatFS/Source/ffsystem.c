@@ -5,8 +5,13 @@
 #include "ff.h"
 #include "FreeRTOS.h"
 
+/* 添加调试输出 */
+extern void uart_puts(const char* s);
+
 DWORD get_fattime(void) {
-    return ((2025UL - 1980) << 25) | (4 << 21) | (13 << 16);
+    /* 返回一个固定的时间戳，确保时间函数正常工作 */
+    /* 2023年1月1日12:00:00 */
+    return ((2023UL - 1980) << 25) | (1 << 21) | (1 << 16) | (12 << 11) | (0 << 5) | (0 >> 1);
 }
 
 #if FF_USE_LFN == 3	/* Use dynamic memory allocation */
@@ -21,17 +26,26 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block (null if no
 	UINT msize		/* Number of bytes to allocate */
 )
 {
-    /* 使用 FreeRTOS 的内存分配函数 */
-    return pvPortMalloc(msize);
+    /* 使用FreeRTOS的内存分配函数 */
+    void* p = pvPortMalloc(msize);
+    
+    /* 添加调试输出 */
+    if (p == NULL) {
+        uart_puts("FatFS: Memory allocation failed\n");
+    }
+    
+    return p;
 }
 
 
 void ff_memfree (
-	void* mblock	/* Pointer to the memory block to free (no effect if null) */
+	void* mblock	/* Pointer to the memory block to free (nothing to do if null) */
 )
 {
-    /* 使用 FreeRTOS 的内存释放函数 */
-    vPortFree(mblock);
+    /* 使用FreeRTOS的内存释放函数 */
+    if (mblock) {
+        vPortFree(mblock);
+    }
 }
 
 #endif
@@ -210,4 +224,5 @@ void ff_mutex_give (
 }
 
 #endif	/* FF_FS_REENTRANT */
+
 

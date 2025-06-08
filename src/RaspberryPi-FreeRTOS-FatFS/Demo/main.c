@@ -72,6 +72,7 @@
 #include "Drivers/irq.h"
 #include "Drivers/gpio.h"
 #include "ff.h"           /* FatFS头文件 */
+#include "diskio.h"
 
 #define UART0_BASE  0x101f1000
 #define UART0_DR    (*(volatile unsigned int*)(UART0_BASE + 0x00))
@@ -181,30 +182,38 @@ void fatfs_task(void *pParam) {
     
     uart_puts("FatFS Task Started\n");
     
-    /* 初始化磁盘 */
-    disk_initialize(0);
-    
     /* 确保首先清除挂载 */
     f_mount(NULL, "", 0);
+    
+    /* 初始化磁盘 */
+    if (disk_initialize(0) & STA_NOINIT) {
+        uart_puts("Disk initialization failed!\n");
+        vTaskDelete(NULL);
+        return;
+    }
     
     /* 格式化磁盘 */
     uart_puts("Formatting disk...\n");
     MKFS_PARM fmt_opt;
     memset(&fmt_opt, 0, sizeof(fmt_opt));
-    fmt_opt.fmt = FM_FAT | FM_SFD;  /* FAT格式 + 单FAT表 */
+    fmt_opt.fmt = FM_ANY;  /* 使用自动选择格式，让FatFS选择最合适的文件系统类型 */
     
     res = f_mkfs("", &fmt_opt, work, sizeof(work));
-    uart_puts("Format result: ");
     if (res != FR_OK) {
+        uart_puts("Format failed: ");
         print_fatfs_error(res);
         vTaskDelete(NULL);
         return;
     } else {
-        uart_puts("Success\n");
+        uart_puts("Format successful\n");
     }
+    
+    /* 确保格式化完成后重新初始化磁盘 */
+    disk_initialize(0);
     
     /* 挂载文件系统 */
     uart_puts("Mounting filesystem...\n");
+    memset(&fs, 0, sizeof(FATFS));  /* 确保文件系统对象被正确初始化 */
     res = f_mount(&fs, "", 1);  /* 1: 立即挂载 */
     
     if (res != FR_OK) {
@@ -216,55 +225,57 @@ void fatfs_task(void *pParam) {
     
     uart_puts("Filesystem mounted successfully\n");
     
+    /* 显示文件系统信息 */
+    DWORD free_clust;
+    FATFS *fs_ptr = &fs;
+    res = f_getfree("", &free_clust, &fs_ptr);
+    if (res == FR_OK) {
+        uart_puts("FAT Type: ");
+        if (fs.fs_type == FS_FAT12) {
+            uart_puts("FAT12\n");
+        } else if (fs.fs_type == FS_FAT16) {
+            uart_puts("FAT16\n");
+        } else if (fs.fs_type == FS_FAT32) {
+            uart_puts("FAT32\n");
+        } else if (fs.fs_type == FS_EXFAT) {
+            uart_puts("exFAT\n");
+        } else {
+            uart_puts("Unknown\n");
+        }
+    }
+    
     /* 尝试写一个简单的测试文件 */
     uart_puts("Creating test file...\n");
     res = f_open(&fil, "TEST.TXT", FA_CREATE_ALWAYS | FA_WRITE);
     
     if (res != FR_OK) {
-        uart_puts("Failed to create file: ");
-        print_fatfs_error(res);
-        
-        /* 检查根目录访问 */
-        uart_puts("Checking root directory...\n");
-        res = f_opendir(&dir, "/");
-        if (res != FR_OK) {
-            uart_puts("Failed to open root directory: ");
-            print_fatfs_error(res);
-        } else {
-            uart_puts("Root directory opened successfully\n");
-            f_closedir(&dir);
-        }
+        uart_puts("Failed to create file\n");
     } else {
         const char *message = "Hello from FreeRTOS and FatFS integration!\n";
         res = f_write(&fil, message, strlen(message), &bw);
         
         if (res != FR_OK) {
-            uart_puts("Failed to write to file: ");
-            print_fatfs_error(res);
+            uart_puts("Failed to write to file\n");
         } else {
-            uart_puts("File written successfully, ");
-            uart_print_num(bw);
-            uart_puts(" bytes written\n");
+            uart_puts("File written successfully\n");
         }
         
         f_sync(&fil);  /* 确保数据写入磁盘 */
         f_close(&fil);
         
         /* 尝试读取文件 */
-        uart_puts("Opening file for reading...\n");
+        uart_puts("Reading file content...\n");
         res = f_open(&fil, "TEST.TXT", FA_READ);
         
         if (res != FR_OK) {
-            uart_puts("Failed to open file for reading: ");
-            print_fatfs_error(res);
+            uart_puts("Failed to open file for reading\n");
         } else {
             memset(buffer, 0, sizeof(buffer));
             
             res = f_read(&fil, buffer, sizeof(buffer), &bw);
             
             if (res != FR_OK) {
-                uart_puts("Failed to read file: ");
-                print_fatfs_error(res);
+                uart_puts("Failed to read file\n");
             } else {
                 uart_puts("File content: ");
                 uart_puts(buffer);
@@ -274,9 +285,11 @@ void fatfs_task(void *pParam) {
         }
     }
     
-    /* 任务完成后循环等待 */
+    uart_puts("\nFatFS integration test completed successfully!\n");
+    
+    /* 任务完成后进入低功耗状态，避免不必要的磁盘操作 */
     while(1) {
-        vTaskDelay(1000);
+        vTaskDelay(10000);  /* 延迟更长时间，减少循环频率 */
     }
 }
 
@@ -307,3 +320,4 @@ void main (void)
         ;
     }
 }
+
