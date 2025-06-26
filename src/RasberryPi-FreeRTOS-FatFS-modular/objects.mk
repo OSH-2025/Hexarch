@@ -9,8 +9,17 @@ OBJECTS += $(BUILD_DIR)FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
 #
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/croutine.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/list.o
-OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue.o
-OBJECTS += $(BUILD_DIR)FreeRTOS/Source/tasks.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue_base.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue_isr.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue_mutex.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue_private.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue_registry.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_create.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_delay.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_hook.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_priority.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_private.o
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/task_schedule.o
 
 #
 #	Interrupt Manager & GPIO Drivers
