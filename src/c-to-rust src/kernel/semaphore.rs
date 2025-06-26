@@ -13,7 +13,7 @@ macro_rules! xSemaphoreCreateBinary {
         QueueDefinition::xQueueGenericCreate(
             1,
             semSEMAPHORE_QUEUE_ITEM_LENGTH,
-            queueQUEUE_TYPE_BINARY_SEMAPHORE,
+            queueQUEUE_TYPE_BINARY_SEMAPHORE
         )
     };
 }
