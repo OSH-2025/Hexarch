@@ -24,48 +24,13 @@ void uart_puts(const char* s) {
     }
 }
 
-/* 简单的LED闪烁任务，用于验证FreeRTOS任务调度 */
-void led_blink_task(void *pParam) {
-    int counter = 0;
-    
-    while(1) {
-        counter++;
-        
-        /* 每秒记录一次日志 */
-        if (counter % 10 == 0) {
-            log_info("LED", "LED闪烁次数");
-            log_info_int("LED", "计数值", counter);
-            uart_puts("LED blink count: ");
-            
-            /* 简单的数字输出 */
-            char buf[16];
-            int i = 0, temp = counter;
-            do {
-                buf[i++] = '0' + (temp % 10);
-                temp /= 10;
-            } while(temp > 0);
-            
-            while(i > 0) {
-                uart_putc(buf[--i]);
-            }
-            uart_puts("\n");
-        }
-        
-        /* LED闪烁 */
-        SetGpio(16, 1);
-        vTaskDelay(50);
-        SetGpio(16, 0);
-        vTaskDelay(50);
-    }
-}
-
 /* 测试各种日志级别和类型的任务 */
 void log_test_task(void *pParam) {
     int count = 0;
     
     uart_puts("Starting log test task\n");
     
-    while(1) {
+    while(count < 30) {
         count++;
         
         /* 基本日志测试 */
@@ -106,7 +71,7 @@ void log_test_task(void *pParam) {
         uart_puts("\n==================\n\n");
         
         /* 每次测试间隔5秒 */
-        vTaskDelay(500);
+        // vTaskDelay(500);
         
         /* 每3次循环切换一下日志级别 */
         if (count % 3 == 0) {
@@ -125,6 +90,67 @@ void log_test_task(void *pParam) {
             }
         }
     }
+    return ;
+}
+
+/* 简单整数转字符串函数 */
+static void int_to_string(int num, char *buffer) {
+    char tmp[12];
+    int i = 0;
+    
+    /* 特殊情况: 0 */
+    if (num == 0) {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return;
+    }
+    
+    /* 将数字转换为字符串 (逆序) */
+    while (num > 0) {
+        tmp[i++] = '0' + (num % 10);
+        num /= 10;
+    }
+    
+    /* 反转字符串 */
+    int j = 0;
+    while (i > 0) {
+        buffer[j++] = tmp[--i];
+    }
+    buffer[j] = '\0';
+}
+
+/* 调度器测试任务 - 不依赖硬件GPIO */
+void scheduler_test_task(void *pParam) {
+    int counter = 0;
+    int task_id = (int)pParam;
+    char task_name[20] = "Task-";
+    char id_str[5];
+    
+    /* 构造任务名称 */
+    int_to_string(task_id, id_str);
+    int i = 5; // "Task-" 的长度
+    int j = 0;
+    while (id_str[j]) {
+        task_name[i++] = id_str[j++];
+    }
+    task_name[i] = '\0';
+    
+    /* 使用日志API记录任务启动 */
+    log_info_str("SCHED", "启动调度器测试任务", task_name);
+    
+    while(counter < 50) {
+        counter++;
+        
+        /* 使用日志API记录计数 */
+        log_info_int(task_name, "循环计数", counter);
+
+        /* 每5次循环，主动放弃CPU以测试调度 */
+        if (counter % 5 == 0) {
+            log_info(task_name, "主动放弃CPU");
+            taskYIELD();
+        }
+    }
+    return ;
 }
 
 /**
@@ -150,8 +176,11 @@ void main(void) {
     }
     
     /* 创建测试任务 */
-    xTaskCreate(led_blink_task, (const signed char *)"LED_BLINK", 128, NULL, 1, NULL);
-    xTaskCreate(log_test_task, (const signed char *)"LOG_TEST", 512, NULL, 2, NULL);
+    xTaskCreate(log_test_task, (const signed char *)"LOG_TEST", 512, NULL, 3, NULL); // 高优先级任务
+    
+    /* 创建多个调度器测试任务，具有不同的优先级和参数 */
+    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST1", 256, (void *)1, 2, NULL); // 低优先级
+    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST2", 256, (void *)2, 2, NULL); // 中优先级
     
     uart_puts("任务创建完成，开始调度器...\n");
     

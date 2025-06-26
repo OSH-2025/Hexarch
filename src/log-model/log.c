@@ -6,9 +6,9 @@ static void uart_putc(char c) {
     /* 
      * 实现一个极简的字符输出函数
      * 这里应该调用底层的UART发送函数，具体实现取决于平台
-     * 假设有一个UART寄存器地址，我们直接写入字符
+     * 使用与main.c中相同的UART地址
      */
-    volatile char *uart_data = (volatile char *)0x20201000; /* UART0 数据寄存器地址，请替换为正确的地址 */
+    volatile unsigned int *uart_data = (volatile unsigned int *)0x101f1000; /* 与main.c中的UART0_DR地址一致 */
     *uart_data = c;
 }
 
@@ -137,6 +137,10 @@ LogLevel_t log_get_level(void) {
 }
 
 /* 内部通用日志写入函数 */
+/* 输出示例
+ * log_write_internal(LOG_LEVEL_ERROR, "TAG", "An error occurred");
+ * 输出: [12345] ERROR (TAG): An error occurred
+ */
 static void log_write_internal(LogLevel_t level, const char *tag, const char *message) {
     /* 检查日志级别 */
     if (level > log_config.level || level == LOG_LEVEL_NONE) {
@@ -198,6 +202,10 @@ void log_debug(const char *tag, const char *message) {
 }
 
 /* 整数值日志函数实现 */
+/* 输出示例
+ * log_error_int("TAG", "Error occurred", -42);
+ * 输出: [12345] ERROR (TAG): Error occurred: -42
+ */
 void log_error_int(const char *tag, const char *message, int value) {
     char buffer[256];
     int pos = 0;
@@ -212,6 +220,10 @@ void log_error_int(const char *tag, const char *message, int value) {
     log_error(tag, buffer);
 }
 
+/* 输出示例
+ * log_info_int("TAG", "Value is", 123);
+ * 输出: [12345] INFO (TAG): Value is: 123
+ */
 void log_info_int(const char *tag, const char *message, int value) {
     char buffer[256];
     int pos = 0;
@@ -226,6 +238,10 @@ void log_info_int(const char *tag, const char *message, int value) {
     log_info(tag, buffer);
 }
 
+/* 输出示例
+ * log_debug_int("TAG", "Debug value", 42);
+ * 输出: [12345] DEBUG (TAG): Debug value: 42
+ */
 void log_debug_int(const char *tag, const char *message, int value) {
     char buffer[256];
     int pos = 0;
@@ -241,6 +257,10 @@ void log_debug_int(const char *tag, const char *message, int value) {
 }
 
 /* 十六进制值日志函数实现 */
+/* 输出示例
+ * log_error_hex("TAG", "Error code", 0x1A2B3C4D);
+ * 输出: [12345] ERROR (TAG): Error code: 0x1A2B3C4D
+ */ 
 void log_error_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
     int pos = 0;
@@ -255,6 +275,10 @@ void log_error_hex(const char *tag, const char *message, uint32_t value) {
     log_error(tag, buffer);
 }
 
+/* 输出示例
+ * log_info_hex("TAG", "Hex value", 0x12345678);
+ * 输出: [12345] INFO (TAG): Hex value: 0x12345678
+ */
 void log_info_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
     int pos = 0;
@@ -269,6 +293,10 @@ void log_info_hex(const char *tag, const char *message, uint32_t value) {
     log_info(tag, buffer);
 }
 
+/* 输出示例
+ * log_debug_hex("TAG", "Debug hex", 0xABCDEF01);
+ * 输出: [12345] DEBUG (TAG): Debug hex: 0xABCDEF01
+ */
 void log_debug_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
     int pos = 0;
@@ -284,6 +312,10 @@ void log_debug_hex(const char *tag, const char *message, uint32_t value) {
 }
 
 /* 字符串连接日志函数实现 */
+/* 输出示例
+ * log_error_str("TAG", "Error message", "Something went wrong");
+ * 输出: [12345] ERROR (TAG): Error message: Something went wrong
+ */
 void log_error_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];
     int pos = 0;
@@ -295,6 +327,10 @@ void log_error_str(const char *tag, const char *message, const char *str_value) 
     log_error(tag, buffer);
 }
 
+/* 输出示例
+ * log_info_str("TAG", "Info message", "All systems operational");
+ * 输出: [12345] INFO (TAG): Info message: All systems operational
+ */
 void log_info_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];
     int pos = 0;
@@ -306,6 +342,10 @@ void log_info_str(const char *tag, const char *message, const char *str_value) {
     log_info(tag, buffer);
 }
 
+/* 输出示例
+ * log_debug_str("TAG", "Debug message", "Debugging in progress");
+ * 输出: [12345] DEBUG (TAG): Debug message: Debugging in progress
+ */
 void log_debug_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];
     int pos = 0;
