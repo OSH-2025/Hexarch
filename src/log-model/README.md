@@ -1,8 +1,9 @@
-# FreeRTOS + log-model
+# FreeRTOS + log-model (Raspberry Pi)
 
 测试前：
 
 将log.c文件放在FreeRTOS/Source目录下
+
 将log.h文件放在FreeRTOS/Source/include目录下
 
 ```  Makefile
@@ -16,6 +17,38 @@ OBJECTS += $(BUILD_DIR)FreeRTOS/Source/log.o
 $ make
 $ qemu-system-arm -M versatilepb -cpu arm1176 -m 128M -nographic -kernel kernel.img
 ```
+
+即可开始测试
+
+# FreeRTOS + log-model (riscv)
+
+测试前：
+
+将log.c文件放在FreeRTOS/Source目录下
+
+将log.h文件放在FreeRTOS/Source/include目录下
+
+将FreeRTOS/Demo/RISC-V-Qemu-virt_GCC/main_blinky.c文件替换为文件夹里的main_blinky.c
+
+```  Makefile
+# 在FreeRTOS/Demo/RISC-V-Qemu-virt_GCC/Makefile中添加以下内容,不要忘记在 '$' 前 Tab
+SRCS = main.c main_blinky.c riscv-virt.c ns16550.c \
+    // ...
+    $(RTOS_SOURCE_DIR)/log.c \
+    // ...
+```
+
+在当前目录下执行：
+
+```
+$ make
+$ qemu-system-riscv32 -nographic -machine virt -net none \
+  -chardev stdio,id=con,mux=on -serial chardev:con \
+  -mon chardev=con,mode=readline -bios none \
+  -smp 4 -kernel ./build/RTOSDemo.axf
+```
+
+即可开始测试
 
 # FreeRTOS Ported to Raspberry Pi
 
