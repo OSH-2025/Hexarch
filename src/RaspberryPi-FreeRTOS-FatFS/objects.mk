@@ -36,10 +36,19 @@ OBJECTS += $(BUILD_DIR)Demo/startup.o
 #
 OBJECTS += $(BUILD_DIR)Demo/main.o
 
+# 检测USE_FATFS宏是否启用
+CFLAGS += -include $(BASE)Demo/config.h
+
+ifeq ($(shell grep -c "USE_FATFS 1" $(BASE)Demo/config.h), 1)
 #
-# FatFS
+# FatFS - 只有当 USE_FATFS=1 时才编译这些文件
 #
 OBJECTS += $(BUILD_DIR)FatFS/Source/ff.o
 OBJECTS += $(BUILD_DIR)FatFS/Source/diskio.o
 OBJECTS += $(BUILD_DIR)FatFS/Source/ffsystem.o
 OBJECTS += $(BUILD_DIR)FatFS/Source/ffunicode.o
+# 定义宏以通知代码FatFS已启用
+CFLAGS += -DUSE_FATFS=1
+else
+# 定义宏以通知代码FatFS已禁用
+CFLAGS += -DUSE_FATFS=0s
