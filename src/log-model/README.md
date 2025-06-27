@@ -24,18 +24,18 @@ $ qemu-system-arm -M versatilepb -cpu arm1176 -m 128M -nographic -kernel kernel.
 
 测试前：
 
-将log.c文件放在FreeRTOS/Source目录下
+将log_rv.c文件放在FreeRTOS/Source目录下(之后建议更名为log.c)
 
-将log.h文件放在FreeRTOS/Source/include目录下
+将log.h文件放在FreeRTOS/Source/include目录下(之后建议更名为log.h)
 
 将FreeRTOS/Demo/RISC-V-Qemu-virt_GCC/main_blinky.c文件替换为文件夹里的main_blinky.c
 
 ```  Makefile
 # 在FreeRTOS/Demo/RISC-V-Qemu-virt_GCC/Makefile中添加以下内容,不要忘记在 '$' 前 Tab
 SRCS = main.c main_blinky.c riscv-virt.c ns16550.c \
-    // ...
-    $(RTOS_SOURCE_DIR)/log.c \
-    // ...
+    # ...
+    $(RTOS_SOURCE_DIR)/log.c \  
+    # ...
 ```
 
 在当前目录下执行：
