@@ -71,8 +71,12 @@
 
 #include "Drivers/irq.h"
 #include "Drivers/gpio.h"
+#include "config.h"
+
+#if USE_FATFS
 #include "ff.h"           /* FatFS头文件 */
 #include "diskio.h"
+#endif
 
 #define UART0_BASE  0x101f1000
 #define UART0_DR    (*(volatile unsigned int*)(UART0_BASE + 0x00))
@@ -89,6 +93,7 @@ void uart_puts(const char* s) {
     }
 }
 
+#if USE_FATFS
 /* 简单的整数转字符串函数，避免使用 sprintf */
 void uart_print_num(FRESULT num) {
     char buf[4];
@@ -139,6 +144,7 @@ void print_fatfs_error(FRESULT res) {
     }
     uart_puts("\n");
 }
+#endif
 
 void uart_init() {
     // 对于 QEMU versatilepb 平台，一般 UART 默认已初始化
@@ -168,6 +174,7 @@ void task2(void *pParam) {
     }
 }
 
+#if USE_FATFS
 void fatfs_task(void *pParam) {
     FATFS fs;           /* 文件系统对象 */
     FIL fil;            /* 文件对象 */
@@ -292,6 +299,7 @@ void fatfs_task(void *pParam) {
         vTaskDelay(10000);  /* 延迟更长时间，减少循环频率 */
     }
 }
+#endif
 
 /**
  *	This is the systems main entry, some call it a boot thread.
@@ -302,13 +310,19 @@ void fatfs_task(void *pParam) {
 void main (void)
 {
     uart_init();
+#if USE_FATFS
     uart_puts("Hello from FreeRTOS with FatFS!\n");
+#else
+    uart_puts("Hello from FreeRTOS!\n");
+#endif
 
     SetGpioFunction(16, 1);			// RDY led
 
     xTaskCreate(task1, (const signed char *)"LED_0", 128, NULL, 0, NULL);
     xTaskCreate(task2, (const signed char *)"LED_1", 128, NULL, 0, NULL);
+#if USE_FATFS
     xTaskCreate(fatfs_task, (const signed char *)"FatFS", 512, NULL, 1, NULL);
+#endif
     	
     vTaskStartScheduler();
 
