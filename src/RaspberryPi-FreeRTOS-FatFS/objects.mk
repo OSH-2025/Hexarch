@@ -51,4 +51,6 @@ OBJECTS += $(BUILD_DIR)FatFS/Source/ffunicode.o
 CFLAGS += -DUSE_FATFS=1
 else
 # 定义宏以通知代码FatFS已禁用
-CFLAGS += -DUSE_FATFS=0s
+CFLAGS += -DUSE_FATFS=0
+endif
+
