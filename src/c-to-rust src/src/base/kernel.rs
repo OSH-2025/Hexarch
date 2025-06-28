@@ -10,7 +10,7 @@ use crate::FreeRTOSconfig::*;
 use crate::list::*;
 use crate::portable::riscv_virt::*;
 #[macro_use]
-use crate::tasks::tasks::*;
+use crate::tasks::*;
 use alloc::sync::Arc;
 use core::arch::global_asm;
 use core::include_str;
