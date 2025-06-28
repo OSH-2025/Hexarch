@@ -24,10 +24,6 @@
  *
  */
 
-
-// main_blinky.c中的日志测试函数是从树莓派版本的main.c改过来的
-
-
 /* FreeRTOS kernel includes. */
 #include <FreeRTOS.h>
 #include <task.h>
@@ -67,6 +63,41 @@ static QueueHandle_t xQueue = NULL;
 /*-----------------------------------------------------------*/
 
 static void prvQueueSendTask( void * pvParameters )
+{
+    TickType_t xNextWakeTime;
+    const unsigned long ulValueToSend = 100UL;
+    const char * const pcMessage1 = "Transfer1";
+    const char * const pcMessage2 = "Transfer2";
+    int f = 1;
+
+    /* Remove compiler warning about unused parameter. */
+    ( void ) pvParameters;
+
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    for( ; ; )
+    {
+        char buf[ 40 ];
+
+        sprintf( buf, "%d: %s: %s", xGetCoreID(),
+                 pcTaskGetName( xTaskGetCurrentTaskHandle() ),
+                 ( f ) ? pcMessage1 : pcMessage2 );
+        vSendString( buf );
+        f = !f;
+
+        /* Place this task in the blocked state until it is time to run again. */
+        vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
+
+        /* Send to the queue - causing the queue receive task to unblock and
+         * toggle the LED.  0 is used as the block time so the sending operation
+         * will not block - it shouldn't need to block as the queue should always
+         * be empty at this point in the code. */
+        xQueueSend( xQueue, &ulValueToSend, 0U );
+    }
+}
+
+void log_test_task_(void * pvParameters)
 {
     TickType_t xNextWakeTime;
     const unsigned long ulValueToSend = 100UL;
@@ -145,23 +176,11 @@ static void prvQueueReceiveTask( void * pvParameters )
 
 /*-----------------------------------------------------------*/
 
-/* 基础UART输出函数 */
-void uart_putc(char c) {
-    while (UART0_FR & (1 << 5)) ; // 等待发送FIFO非满
-    UART0_DR = c;
-}
-
-void uart_puts(const char* s) {
-    while (*s) {
-        uart_putc(*s++);
-    }
-}
-
 /* 测试各种日志级别和类型的任务 */
 void log_test_task(void *pParam) {
     int count = 0;
     
-    uart_puts("Starting log test task\n");
+    vSendString("Starting log test task\n");
     
     while(count < 30) {
         count++;
@@ -186,25 +205,29 @@ void log_test_task(void *pParam) {
         log_info_str("TEST", "信息日志-字符串值", "测试信息字符串");
         log_debug_str("TEST", "调试日志-字符串值", "测试调试字符串");
         
-        /* 直接使用uart输出进行验证 */
-        uart_puts("\n==================\n");
-        uart_puts("Completed log test cycle ");
+        /* 直接输出进行验证 */
+        vSendString("\n==================\n");
+        vSendString("Completed log test cycle ");
         
         /* 简单的数字输出 */
         char buf[16];
-        int i = 0, temp = count;
+        char tmp[16];
+        int i = 0;
+        int temp = count;
         do {
-            buf[i++] = '0' + (temp % 10);
+            tmp[i++] = '0' + (temp % 10);
             temp /= 10;
         } while(temp > 0);
         
-        while(i > 0) {
-            uart_putc(buf[--i]);
+        int j = 0;
+        while (i > 0) {
+            buf[j++] = tmp[--i];
         }
-        uart_puts("\n==================\n\n");
-        
-        /* 每次测试间隔5秒 */
-        // vTaskDelay(500);
+        buf[j] = '\0';
+
+        vSendString(buf);
+
+        vSendString("\n==================\n\n");
         
         /* 每3次循环切换一下日志级别 */
         if (count % 3 == 0) {
@@ -213,17 +236,18 @@ void log_test_task(void *pParam) {
             /* 轮换日志级别: ERROR -> INFO -> DEBUG -> ERROR ... */
             if (current_level == LOG_LEVEL_ERROR) {
                 log_set_level(LOG_LEVEL_INFO);
-                uart_puts("Log level changed to INFO\n");
+                vSendString("Log level changed to INFO\n");
             } else if (current_level == LOG_LEVEL_INFO) {
                 log_set_level(LOG_LEVEL_DEBUG);
-                uart_puts("Log level changed to DEBUG\n");
+                vSendString("Log level changed to DEBUG\n");
             } else {
                 log_set_level(LOG_LEVEL_ERROR);
-                uart_puts("Log level changed to ERROR\n");
+                vSendString("Log level changed to ERROR\n");
             }
         }
     }
-    return;
+
+    vTaskDelay(100);
 }
 
 /* 简单整数转字符串函数 */
@@ -271,16 +295,11 @@ void scheduler_test_task(void *pParam) {
     /* 使用日志API记录任务启动 */
     log_info_str("SCHED", "启动调度器测试任务", task_name);
     
-    while(counter < 50) {
+    while(counter < 100) {
         counter++;
         
         /* 使用日志API记录计数 */
         log_info_int(task_name, "循环计数", counter);
-        
-        /* 使用简单循环来延迟，不依赖于vTaskDelay */
-        for(volatile int i = 0; i < 100000; i++) {
-            /* 空循环延迟 */
-        }
         
         /* 每5次循环，主动放弃CPU以测试调度 */
         if (counter % 5 == 0) {
@@ -289,14 +308,14 @@ void scheduler_test_task(void *pParam) {
         }
         // vTaskDelay(100);
     }
-    return;
+    // vTaskDelay(100);
 }
 
 /*-----------------------------------------------------------*/
 
 int main_blinky( void )
 {
-    vSendString( "Hello FreeRTOS!" );
+    vSendString("\nHello FreeRTOS!\n");
 
     log_info_str("SCHED", "启动调度器测试任务", "task_name");
 
@@ -330,8 +349,8 @@ int main_blinky( void )
         xTaskCreate(log_test_task, "LOG_TEST", 512, NULL, 3, NULL);
     
         /* 创建多个调度器测试任务，具有不同的优先级和参数 */
-        xTaskCreate(scheduler_test_task, "SCHED_TEST1", 256, (void *)1, 0, NULL); // 低优先级
-        xTaskCreate(scheduler_test_task, "SCHED_TEST2", 256, (void *)2, 0, NULL); // 中优先级
+        // xTaskCreate(scheduler_test_task, "SCHED_TEST1", 256, (void *)1, 0, NULL); // 低优先级
+        // xTaskCreate(scheduler_test_task, "SCHED_TEST2", 256, (void *)2, 0, NULL); // 中优先级
     }
 
     // uart_puts("任务创建完成，开始调度器...\n");
