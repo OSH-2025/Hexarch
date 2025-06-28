@@ -1,6 +1,6 @@
 //! Global Allocatot Definition <br>
 //! use buddy_system_allocator and wrap as SimpleAllocator
-use crate::tasks::tasks::{vTaskEnterCritical, vTaskExitCritical};
+use crate::tasks::{vTaskEnterCritical, vTaskExitCritical};
 use crate::base::FreeRTOSconfig::KERNEL_HEAP_SIZE;
 use alloc::format;
 use buddy_system_allocator::LockedHeap;
