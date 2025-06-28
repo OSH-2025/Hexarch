@@ -29,8 +29,6 @@
 #include <task.h>
 #include <queue.h>
 
-#include <stdio.h>
-
 #include "riscv-virt.h"
 #include "ns16550.h"
 #include "log.h"
@@ -60,195 +58,10 @@
 /* The queue used by both tasks. */
 static QueueHandle_t xQueue = NULL;
 
-/*-----------------------------------------------------------*/
-
-static void prvQueueSendTask( void * pvParameters )
-{
-    TickType_t xNextWakeTime;
-    const unsigned long ulValueToSend = 100UL;
-    const char * const pcMessage1 = "Transfer1";
-    const char * const pcMessage2 = "Transfer2";
-    int f = 1;
-
-    /* Remove compiler warning about unused parameter. */
-    ( void ) pvParameters;
-
-    /* Initialise xNextWakeTime - this only needs to be done once. */
-    xNextWakeTime = xTaskGetTickCount();
-
-    for( ; ; )
-    {
-        char buf[ 40 ];
-
-        sprintf( buf, "%d: %s: %s", xGetCoreID(),
-                 pcTaskGetName( xTaskGetCurrentTaskHandle() ),
-                 ( f ) ? pcMessage1 : pcMessage2 );
-        vSendString( buf );
-        f = !f;
-
-        /* Place this task in the blocked state until it is time to run again. */
-        vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
-
-        /* Send to the queue - causing the queue receive task to unblock and
-         * toggle the LED.  0 is used as the block time so the sending operation
-         * will not block - it shouldn't need to block as the queue should always
-         * be empty at this point in the code. */
-        xQueueSend( xQueue, &ulValueToSend, 0U );
-    }
-}
-
-void log_test_task_(void * pvParameters)
-{
-    TickType_t xNextWakeTime;
-    const unsigned long ulValueToSend = 100UL;
-    const char * const pcMessage1 = "Transfer1";
-    const char * const pcMessage2 = "Transfer2";
-    int f = 1;
-
-    /* Remove compiler warning about unused parameter. */
-    ( void ) pvParameters;
-
-    /* Initialise xNextWakeTime - this only needs to be done once. */
-    xNextWakeTime = xTaskGetTickCount();
-
-    for( ; ; )
-    {
-        char buf[ 40 ];
-
-        sprintf( buf, "%d: %s: %s", xGetCoreID(),
-                 pcTaskGetName( xTaskGetCurrentTaskHandle() ),
-                 ( f ) ? pcMessage1 : pcMessage2 );
-        vSendString( buf );
-        f = !f;
-
-        /* Place this task in the blocked state until it is time to run again. */
-        vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
-
-        /* Send to the queue - causing the queue receive task to unblock and
-         * toggle the LED.  0 is used as the block time so the sending operation
-         * will not block - it shouldn't need to block as the queue should always
-         * be empty at this point in the code. */
-        xQueueSend( xQueue, &ulValueToSend, 0U );
-    }
-}
+/* 全局计数器，用于记录日志 */
+static int counter = 0;
 
 /*-----------------------------------------------------------*/
-
-static void prvQueueReceiveTask( void * pvParameters )
-{
-    unsigned long ulReceivedValue;
-    const unsigned long ulExpectedValue = 100UL;
-    const char * const pcMessage1 = "Blink1";
-    const char * const pcMessage2 = "Blink2";
-    const char * const pcFailMessage = "Unexpected value received\r\n";
-    int f = 1;
-
-    /* Remove compiler warning about unused parameter. */
-    ( void ) pvParameters;
-
-    for( ; ; )
-    {
-        char buf[ 40 ];
-
-        /* Wait until something arrives in the queue - this task will block
-         * indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
-         * FreeRTOSConfig.h. */
-        xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
-
-        /*  To get here something must have been received from the queue, but
-         * is it the expected value?  If it is, toggle the LED. */
-        if( ulReceivedValue == ulExpectedValue )
-        {
-            sprintf( buf, "%d: %s: %s", xGetCoreID(),
-                     pcTaskGetName( xTaskGetCurrentTaskHandle() ),
-                     ( f ) ? pcMessage1 : pcMessage2 );
-            vSendString( buf );
-            f = !f;
-
-            ulReceivedValue = 0U;
-        }
-        else
-        {
-            vSendString( pcFailMessage );
-        }
-    }
-}
-
-/*-----------------------------------------------------------*/
-
-/* 测试各种日志级别和类型的任务 */
-void log_test_task(void *pParam) {
-    int count = 0;
-    
-    vSendString("Starting log test task\n");
-    
-    while(count < 30) {
-        count++;
-        
-        /* 基本日志测试 */
-        log_error("TEST", "这是一条错误日志");
-        log_info("TEST", "这是一条信息日志");
-        log_debug("TEST", "这是一条调试日志");
-        
-        /* 数值日志测试 */
-        log_error_int("TEST", "错误日志-整数值", count);
-        log_info_int("TEST", "信息日志-整数值", count * 10);
-        log_debug_int("TEST", "调试日志-整数值", count * 100);
-        
-        /* 十六进制值测试 */
-        log_error_hex("TEST", "错误日志-十六进制值", count);
-        log_info_hex("TEST", "信息日志-十六进制值", 0xABCD);
-        log_debug_hex("TEST", "调试日志-十六进制值", 0x12345678);
-        
-        /* 字符串值测试 */
-        log_error_str("TEST", "错误日志-字符串值", "测试错误字符串");
-        log_info_str("TEST", "信息日志-字符串值", "测试信息字符串");
-        log_debug_str("TEST", "调试日志-字符串值", "测试调试字符串");
-        
-        /* 直接输出进行验证 */
-        vSendString("\n==================\n");
-        vSendString("Completed log test cycle ");
-        
-        /* 简单的数字输出 */
-        char buf[16];
-        char tmp[16];
-        int i = 0;
-        int temp = count;
-        do {
-            tmp[i++] = '0' + (temp % 10);
-            temp /= 10;
-        } while(temp > 0);
-        
-        int j = 0;
-        while (i > 0) {
-            buf[j++] = tmp[--i];
-        }
-        buf[j] = '\0';
-
-        vSendString(buf);
-
-        vSendString("\n==================\n\n");
-        
-        /* 每3次循环切换一下日志级别 */
-        if (count % 3 == 0) {
-            LogLevel_t current_level = log_get_level();
-            
-            /* 轮换日志级别: ERROR -> INFO -> DEBUG -> ERROR ... */
-            if (current_level == LOG_LEVEL_ERROR) {
-                log_set_level(LOG_LEVEL_INFO);
-                vSendString("Log level changed to INFO\n");
-            } else if (current_level == LOG_LEVEL_INFO) {
-                log_set_level(LOG_LEVEL_DEBUG);
-                vSendString("Log level changed to DEBUG\n");
-            } else {
-                log_set_level(LOG_LEVEL_ERROR);
-                vSendString("Log level changed to ERROR\n");
-            }
-        }
-    }
-
-    vTaskDelay(100);
-}
 
 /* 简单整数转字符串函数 */
 static void int_to_string(int num, char *buffer) {
@@ -278,7 +91,7 @@ static void int_to_string(int num, char *buffer) {
 
 /* 调度器测试任务 - 不依赖硬件GPIO */
 void scheduler_test_task(void *pParam) {
-    int counter = 0;
+    int count = 0;
     int task_id = (int)pParam;
     char task_name[20] = "Task-";
     char id_str[5];
@@ -295,20 +108,117 @@ void scheduler_test_task(void *pParam) {
     /* 使用日志API记录任务启动 */
     log_info_str("SCHED", "启动调度器测试任务", task_name);
     
-    while(counter < 100) {
-        counter++;
+    while(count < 20) {
+        count++;
         
         /* 使用日志API记录计数 */
-        log_info_int(task_name, "循环计数", counter);
+        log_info_int(task_name, "循环计数", count);
         
         /* 每5次循环，主动放弃CPU以测试调度 */
-        if (counter % 5 == 0) {
+        if (count % 5 == 0) {
             log_info(task_name, "主动放弃CPU");
             taskYIELD();
         }
-        // vTaskDelay(100);
+        
+        /* 添加延时，避免任务过于频繁执行 */
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
-    // vTaskDelay(100);
+    
+    /* 任务完成后记录并删除自己 */
+    log_info_str("SCHED", "任务完成，即将删除", task_name);
+    vTaskDelete(NULL);
+}
+
+/*-----------------------------------------------------------*/
+
+static void log_send_task( void * pvParameters )
+{   
+    TickType_t xNextWakeTime;
+    const unsigned long ulValueToSend = 100UL;
+
+    // static int counter = 0;
+
+    int task_id = (int)pvParameters;
+    char task_name[20] = "Task-";
+    char id_str[5];
+    
+    /* 构造任务名称 */
+    int_to_string(task_id, id_str);
+    int i = 5; // "Task-" 的长度
+    int j = 0;
+    while (id_str[j]) {
+        task_name[i++] = id_str[j++];
+    }
+    task_name[i] = '\0';
+    
+    /* Remove compiler warning about unused parameter. */
+    ( void ) pvParameters;
+
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    for( ; ; )
+    {
+        /* 使用日志API记录计数 */
+        log_info_int(task_name, "循环计数", counter);
+
+        /* Place this task in the blocked state until it is time to run again. */
+        vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
+
+        /* Send to the queue - causing the queue receive task to unblock and
+         * toggle the LED.  0 is used as the block time so the sending operation
+         * will not block - it shouldn't need to block as the queue should always
+         * be empty at this point in the code. */
+        xQueueSend( xQueue, &ulValueToSend, 0U );
+    }
+}
+
+/*-----------------------------------------------------------*/
+
+static void log_recv_task( void * pvParameters )
+{
+    unsigned long ulReceivedValue;
+    const unsigned long ulExpectedValue = 100UL;
+
+    int task_id = (int)pvParameters;
+    char task_name[20] = "Task-";
+    char id_str[5];
+    
+    /* 构造任务名称 */
+    int_to_string(task_id, id_str);
+    int i = 5; // "Task-" 的长度
+    int j = 0;
+    while (id_str[j]) {
+        task_name[i++] = id_str[j++];
+    }
+    task_name[i] = '\0';
+    
+    /* Remove compiler warning about unused parameter. */
+    ( void ) pvParameters;
+
+    for( ; ; )
+    {
+        /* Wait until something arrives in the queue - this task will block
+         * indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
+         * FreeRTOSConfig.h. */
+        xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
+
+        /*  To get here something must have been received from the queue, but
+         * is it the expected value?  If it is, toggle the LED. */
+        if( ulReceivedValue == ulExpectedValue )
+        {
+            /* 使用日志API记录计数 */
+            log_info_int(task_name, "循环计数", counter);
+
+            counter++;
+
+            ulReceivedValue = 0U;
+        }
+        else
+        {
+            vSendString( "Unexpected value received\r\n" );
+        }
+    }
 }
 
 /*-----------------------------------------------------------*/
@@ -340,17 +250,17 @@ int main_blinky( void )
     {
         /* Start the two tasks as described in the comments at the top of this
          * file. */
-        xTaskCreate( prvQueueReceiveTask, "Rx", configMINIMAL_STACK_SIZE * 2U, NULL,
+        xTaskCreate( log_send_task, "Rx", configMINIMAL_STACK_SIZE * 2U, (void *)1,
                      mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
-        xTaskCreate( prvQueueSendTask, "Tx", configMINIMAL_STACK_SIZE * 2U, NULL,
+        xTaskCreate( log_recv_task, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2,
                      mainQUEUE_SEND_TASK_PRIORITY, NULL );
 
-        /* 创建日志测试任务 */
-        xTaskCreate(log_test_task, "LOG_TEST", 512, NULL, 3, NULL);
-    
+
         /* 创建多个调度器测试任务，具有不同的优先级和参数 */
-        // xTaskCreate(scheduler_test_task, "SCHED_TEST1", 256, (void *)1, 0, NULL); // 低优先级
-        // xTaskCreate(scheduler_test_task, "SCHED_TEST2", 256, (void *)2, 0, NULL); // 中优先级
+        xTaskCreate( scheduler_test_task, "SCHED_TEST1", configMINIMAL_STACK_SIZE * 2U, (void *)1, 
+                    3, NULL); // 低优先级
+        xTaskCreate( scheduler_test_task, "SCHED_TEST2", configMINIMAL_STACK_SIZE * 2U, (void *)2, 
+                    3, NULL); // 中优先级
     }
 
     // uart_puts("任务创建完成，开始调度器...\n");
