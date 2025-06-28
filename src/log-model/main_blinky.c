@@ -1,4 +1,22 @@
 /*
+ * 条件编译日志模块使用说明：
+ * 
+ * 1. 启用日志模块：在 FreeRTOSConfig.h 中设置 configUSE_LOG_MODULE = 1
+ *    或者使用 make ENABLE_LOG=1 编译
+ *    - 会创建 scheduler_test_task，使用完整的日志功能
+ *    - 日志函数正常工作，提供详细的调试信息
+ * 
+ * 2. 禁用日志模块：在 FreeRTOSConfig.h 中设置 configUSE_LOG_MODULE = 0  
+ *    或者使用 make ENABLE_LOG=0 编译
+ *    - 会创建 simple_demo_task，使用简单的串口输出
+ *    - 日志函数调用被优化掉，节省资源
+ * 
+ * 编译命令示例：
+ * make clean && make ENABLE_LOG=1  # 启用日志版本
+ * make clean && make ENABLE_LOG=0  # 禁用日志版本
+ */
+
+/*
  * FreeRTOS V202212.00
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -93,7 +111,7 @@ static void int_to_string(int num, char *buffer) {
 void scheduler_test_task(void *pParam) {
     int count = 0;
     int task_id = (int)pParam;
-    char task_name[20] = "Task-";
+    char task_name[20] = "SCHED-";
     char id_str[5];
     
     /* 构造任务名称 */
@@ -223,44 +241,130 @@ static void log_recv_task( void * pvParameters )
 
 /*-----------------------------------------------------------*/
 
+static void prvQueueSendTask( void * pvParameters )
+{
+    TickType_t xNextWakeTime;
+    const unsigned long ulValueToSend = 100UL;
+    const char * const pcMessage1 = "Transfer1";
+    const char * const pcMessage2 = "Transfer2";
+    int f = 1;
+
+    /* Remove compiler warning about unused parameter. */
+    ( void ) pvParameters;
+
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    for( ; ; )
+    {
+        char buf[ 40 ];
+
+        sprintf( buf, "%d: %s: %s", xGetCoreID(),
+                 pcTaskGetName( xTaskGetCurrentTaskHandle() ),
+                 ( f ) ? pcMessage1 : pcMessage2 );
+        vSendString( buf );
+        f = !f;
+
+        /* Place this task in the blocked state until it is time to run again. */
+        vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
+
+        /* Send to the queue - causing the queue receive task to unblock and
+         * toggle the LED.  0 is used as the block time so the sending operation
+         * will not block - it shouldn't need to block as the queue should always
+         * be empty at this point in the code. */
+        xQueueSend( xQueue, &ulValueToSend, 0U );
+    }
+}
+
+/*-----------------------------------------------------------*/
+
+static void prvQueueReceiveTask( void * pvParameters )
+{
+    unsigned long ulReceivedValue;
+    const unsigned long ulExpectedValue = 100UL;
+    const char * const pcMessage1 = "Blink1";
+    const char * const pcMessage2 = "Blink2";
+    const char * const pcFailMessage = "Unexpected value received\r\n";
+    int f = 1;
+
+    /* Remove compiler warning about unused parameter. */
+    ( void ) pvParameters;
+
+    for( ; ; )
+    {
+        char buf[ 40 ];
+
+        /* Wait until something arrives in the queue - this task will block
+         * indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
+         * FreeRTOSConfig.h. */
+        xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
+
+        /*  To get here something must have been received from the queue, but
+         * is it the expected value?  If it is, toggle the LED. */
+        if( ulReceivedValue == ulExpectedValue )
+        {
+            sprintf( buf, "%d: %s: %s", xGetCoreID(),
+                     pcTaskGetName( xTaskGetCurrentTaskHandle() ),
+                     ( f ) ? pcMessage1 : pcMessage2 );
+            vSendString( buf );
+            f = !f;
+
+            ulReceivedValue = 0U;
+        }
+        else
+        {
+            vSendString( pcFailMessage );
+        }
+    }
+}
+
+/*-----------------------------------------------------------*/
+
 int main_blinky( void )
 {
     vSendString("\nHello FreeRTOS!\n");
 
+#if (configUSE_LOG_MODULE == 1)
     log_info_str("SCHED", "启动调度器测试任务", "task_name");
 
     /* 初始化日志系统 */
     LogConfig_t log_config = {
         .level = LOG_LEVEL_INFO,
-        .show_timestamp = true
+        .show_timestamp = 1  
     };
     
     if (log_init(&log_config)) {
-        // uart_puts("日志系统初始化成功\n");
         vSendString("日志系统初始化成功\n");
     } else {
-        // uart_puts("日志系统初始化失败\n");
         vSendString("日志系统初始化失败\n");
     }
+#else
+    vSendString("日志模块已禁用\n");
+#endif
     
     /* Create the queue. */
     xQueue = xQueueCreate( mainQUEUE_LENGTH, sizeof( uint32_t ) );
 
     if( xQueue != NULL )
     {
-        /* Start the two tasks as described in the comments at the top of this
-         * file. */
+#if (configUSE_LOG_MODULE == 1)
+        /* 创建使用日志的生产者和消费者任务 */
         xTaskCreate( log_send_task, "Rx", configMINIMAL_STACK_SIZE * 2U, (void *)1,
-                     mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
-        xTaskCreate( log_recv_task, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2,
                      mainQUEUE_SEND_TASK_PRIORITY, NULL );
-
-
-        /* 创建多个调度器测试任务，具有不同的优先级和参数 */
+        xTaskCreate( log_recv_task, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2,
+                     mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
+        /* 创建使用日志的调度器测试任务 */
         xTaskCreate( scheduler_test_task, "SCHED_TEST1", configMINIMAL_STACK_SIZE * 2U, (void *)1, 
-                    3, NULL); // 低优先级
+                    2, NULL);
         xTaskCreate( scheduler_test_task, "SCHED_TEST2", configMINIMAL_STACK_SIZE * 2U, (void *)2, 
-                    3, NULL); // 中优先级
+                    2, NULL);
+#else
+        /* 创建不使用日志的生产者和消费者任务 */
+        xTaskCreate( prvQueueSendTask, "Rx", configMINIMAL_STACK_SIZE * 2U, (void *)1, 
+                    mainQUEUE_SEND_TASK_PRIORITY, NULL);
+        xTaskCreate( prvQueueReceiveTask, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2, 
+                    mainQUEUE_RECEIVE_TASK_PRIORITY, NULL);
+#endif
     }
 
     // uart_puts("任务创建完成，开始调度器...\n");
