@@ -1,7 +1,8 @@
-use crate::kernel::projdefs::pdFALSE;
-// use crate::kernel::list::*;
+use crate::base::projdefs::pdFALSE;
+// use crate::base::list::*;
 use crate::list::*;
-use crate::kernel::tasks::*;
+#[macro_use]
+use crate::tasks::*;
 use crate::*;
 use alloc::sync::{Arc, Weak};
 use spin::RwLock;

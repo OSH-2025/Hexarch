@@ -4,6 +4,7 @@ extern crate alloc;
 use crate::portable::portmacro::*;
 use crate::portable::riscv_virt::*;
 use crate::portable::*;
+#[macro_use]
 use crate::tasks::*;
 use alloc::format;
 use alloc::sync::{Arc, Weak};
