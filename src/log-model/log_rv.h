@@ -3,7 +3,7 @@
 
 #include "FreeRTOS.h"
 
-/* 检查是否启用了日志模块 */
+/* Check if log module is enabled */
 #if (configUSE_LOG_MODULE == 1)
 
 #include "semphr.h"
@@ -11,48 +11,46 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* 简化的日志级别定义 */
 typedef enum {
-    LOG_LEVEL_NONE = 0,   /* 不输出任何日志 */
-    LOG_LEVEL_ERROR,      /* 错误信息 */
-    LOG_LEVEL_INFO,       /* 一般信息 */
-    LOG_LEVEL_DEBUG,      /* 调试信息 */
+    LOG_LEVEL_NONE = 0,   /* No log output */
+    LOG_LEVEL_ERROR,      /* Error messages */
+    LOG_LEVEL_INFO,       /* General information */
+    LOG_LEVEL_DEBUG,      /* Debug information */
 } LogLevel_t;
 
-/* 简化的日志系统配置结构体 */
 typedef struct {
-    LogLevel_t level;         /* 当前日志级别 */
-    bool show_timestamp;      /* 是否显示时间戳 */
+    LogLevel_t level;         /* Current log level */
+    bool show_timestamp;      /* Whether to show timestamp */
 } LogConfig_t;
 
-/* 日志系统初始化与配置函数 */
+/* Log system initialization and configuration functions */
 bool log_init(LogConfig_t *config);
 void log_set_level(LogLevel_t level);
 LogLevel_t log_get_level(void);
 
-/* 基础日志函数 - 不使用可变参数，避免依赖复杂格式化库 */
+/* Basic log functions */
 void log_error(const char *tag, const char *message);
 void log_info(const char *tag, const char *message);
 void log_debug(const char *tag, const char *message);
 
-/* 整数值记录函数 - 避免浮点数处理 */
+/* Integer value logging functions */
 void log_error_int(const char *tag, const char *message, int value);
 void log_info_int(const char *tag, const char *message, int value);
 void log_debug_int(const char *tag, const char *message, int value);
 
-/* 十六进制值记录函数 */
+/* Hexadecimal value logging functions */
 void log_error_hex(const char *tag, const char *message, uint32_t value);
 void log_info_hex(const char *tag, const char *message, uint32_t value);
 void log_debug_hex(const char *tag, const char *message, uint32_t value);
 
-/* 字符串连接记录函数 */
+/* String concatenation logging functions */
 void log_error_str(const char *tag, const char *message, const char *str_value);
 void log_info_str(const char *tag, const char *message, const char *str_value);
 void log_debug_str(const char *tag, const char *message, const char *str_value);
 
 #else /* configUSE_LOG_MODULE == 0 */
 
-/* 当日志模块被禁用时，提供空的宏定义 */
+/* When log module is disabled, provide empty macro definitions */
 typedef enum {
     LOG_LEVEL_NONE = 0,
     LOG_LEVEL_ERROR,
@@ -62,10 +60,10 @@ typedef enum {
 
 typedef struct {
     LogLevel_t level;
-    int show_timestamp;  /* 使用 int 而非 bool 避免依赖 */
+    int show_timestamp;  /* Use int instead of bool to avoid dependencies */
 } LogConfig_t;
 
-/* 空宏定义 - 编译时会被优化掉 */
+/* Empty macro definitions - will be optimized away at compile time */
 #define log_init(config)                    (1)
 #define log_set_level(level)                do { } while(0)
 #define log_get_level()                     (LOG_LEVEL_NONE)

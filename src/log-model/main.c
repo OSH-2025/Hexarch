@@ -1,6 +1,6 @@
 /*
- * 简单的日志系统测试程序
- * 用于测试FreeRTOS下日志系统的功能
+ * Simple log system test program
+ * Used to test log system functionality under FreeRTOS
  */
 
 #include <FreeRTOS.h>
@@ -12,9 +12,9 @@
 #define UART0_DR    (*(volatile unsigned int*)(UART0_BASE + 0x00))
 #define UART0_FR    (*(volatile unsigned int*)(UART0_BASE + 0x18))
 
-/* 基础UART输出函数 */
+/* Basic UART output function */
 void uart_putc(char c) {
-    while (UART0_FR & (1 << 5)) ; // 等待发送FIFO非满
+    while (UART0_FR & (1 << 5)) ; // Wait for transmit FIFO not full
     UART0_DR = c;
 }
 
@@ -24,7 +24,7 @@ void uart_puts(const char* s) {
     }
 }
 
-/* 测试各种日志级别和类型的任务 */
+/* Task to test various log levels and types */
 void log_test_task(void *pParam) {
     int count = 0;
     
@@ -33,31 +33,31 @@ void log_test_task(void *pParam) {
     while(count < 30) {
         count++;
         
-        /* 基本日志测试 */
-        log_error("TEST", "这是一条错误日志");
-        log_info("TEST", "这是一条信息日志");
-        log_debug("TEST", "这是一条调试日志");
+        /* Basic log test */
+        log_error("TEST", "This is an error log");
+        log_info("TEST", "This is an info log");
+        log_debug("TEST", "This is a debug log");
         
-        /* 数值日志测试 */
-        log_error_int("TEST", "错误日志-整数值", count);
-        log_info_int("TEST", "信息日志-整数值", count * 10);
-        log_debug_int("TEST", "调试日志-整数值", count * 100);
+        /* Numeric log test */
+        log_error_int("TEST", "Error log - integer value", count);
+        log_info_int("TEST", "Info log - integer value", count * 10);
+        log_debug_int("TEST", "Debug log - integer value", count * 100);
         
-        /* 十六进制值测试 */
-        log_error_hex("TEST", "错误日志-十六进制值", count);
-        log_info_hex("TEST", "信息日志-十六进制值", 0xABCD);
-        log_debug_hex("TEST", "调试日志-十六进制值", 0x12345678);
+        /* Hexadecimal value test */
+        log_error_hex("TEST", "Error log - hexadecimal value", count);
+        log_info_hex("TEST", "Info log - hexadecimal value", 0xABCD);
+        log_debug_hex("TEST", "Debug log - hexadecimal value", 0x12345678);
         
-        /* 字符串值测试 */
-        log_error_str("TEST", "错误日志-字符串值", "测试错误字符串");
-        log_info_str("TEST", "信息日志-字符串值", "测试信息字符串");
-        log_debug_str("TEST", "调试日志-字符串值", "测试调试字符串");
+        /* String value test */
+        log_error_str("TEST", "Error log - string value", "Test error string");
+        log_info_str("TEST", "Info log - string value", "Test info string");
+        log_debug_str("TEST", "Debug log - string value", "Test debug string");
         
-        /* 直接使用uart输出进行验证 */
+        /* Direct UART output for verification */
         uart_puts("\n==================\n");
         uart_puts("Completed log test cycle ");
         
-        /* 简单的数字输出 */
+        /* Simple number output */
         char buf[16];
         int i = 0, temp = count;
         do {
@@ -70,14 +70,14 @@ void log_test_task(void *pParam) {
         }
         uart_puts("\n==================\n\n");
         
-        /* 每次测试间隔5秒 */
+        /* 5 second interval between each test */
         // vTaskDelay(500);
         
-        /* 每3次循环切换一下日志级别 */
+        /* Switch log level every 3 cycles */
         if (count % 3 == 0) {
             LogLevel_t current_level = log_get_level();
             
-            /* 轮换日志级别: ERROR -> INFO -> DEBUG -> ERROR ... */
+            /* Rotate log levels: ERROR -> INFO -> DEBUG -> ERROR ... */
             if (current_level == LOG_LEVEL_ERROR) {
                 log_set_level(LOG_LEVEL_INFO);
                 uart_puts("Log level changed to INFO\n");
@@ -93,25 +93,25 @@ void log_test_task(void *pParam) {
     return ;
 }
 
-/* 简单整数转字符串函数 */
+/* Simple integer to string function */
 static void int_to_string(int num, char *buffer) {
     char tmp[12];
     int i = 0;
     
-    /* 特殊情况: 0 */
+    /* Special case: 0 */
     if (num == 0) {
         buffer[0] = '0';
         buffer[1] = '\0';
         return;
     }
     
-    /* 将数字转换为字符串 (逆序) */
+    /* Convert number to string (reverse order) */
     while (num > 0) {
         tmp[i++] = '0' + (num % 10);
         num /= 10;
     }
     
-    /* 反转字符串 */
+    /* Reverse string */
     int j = 0;
     while (i > 0) {
         buffer[j++] = tmp[--i];
@@ -119,34 +119,34 @@ static void int_to_string(int num, char *buffer) {
     buffer[j] = '\0';
 }
 
-/* 调度器测试任务 - 不依赖硬件GPIO */
+/* Scheduler test task - does not depend on hardware GPIO */
 void scheduler_test_task(void *pParam) {
     int counter = 0;
     int task_id = (int)pParam;
     char task_name[20] = "Task-";
     char id_str[5];
     
-    /* 构造任务名称 */
+    /* Construct task name */
     int_to_string(task_id, id_str);
-    int i = 5; // "Task-" 的长度
+    int i = 5; // Length of "Task-"
     int j = 0;
     while (id_str[j]) {
         task_name[i++] = id_str[j++];
     }
     task_name[i] = '\0';
     
-    /* 使用日志API记录任务启动 */
-    log_info_str("SCHED", "启动调度器测试任务", task_name);
+    /* Use log API to record task startup */
+    log_info_str("SCHED", "Starting scheduler test task", task_name);
     
     while(counter < 50) {
         counter++;
         
-        /* 使用日志API记录计数 */
-        log_info_int(task_name, "循环计数", counter);
+        /* Use log API to record count */
+        log_info_int(task_name, "Loop count", counter);
 
-        /* 每5次循环，主动放弃CPU以测试调度 */
+        /* Every 5 loops, voluntarily give up CPU to test scheduling */
         if (counter % 5 == 0) {
-            log_info(task_name, "主动放弃CPU");
+            log_info(task_name, "Voluntarily giving up CPU");
             taskYIELD();
         }
     }
@@ -154,40 +154,40 @@ void scheduler_test_task(void *pParam) {
 }
 
 /**
- * 系统入口函数
+ * System entry function
  */
 void main(void) {
-    /* 初始化UART（在QEMU中通常不需要额外配置） */
-    uart_puts("\n\n=== 日志系统测试程序启动 ===\n\n");
+    /* Initialize UART (usually no additional configuration needed in QEMU) */
+    uart_puts("\n\n=== Log System Test Program Started ===\n\n");
     
-    /* 初始化LED GPIO */
+    /* Initialize LED GPIO */
     SetGpioFunction(16, 1);
     
-    /* 初始化日志系统 */
+    /* Initialize log system */
     LogConfig_t log_config = {
         .level = LOG_LEVEL_INFO,
         .show_timestamp = true
     };
     
     if (log_init(&log_config)) {
-        uart_puts("日志系统初始化成功\n");
+        uart_puts("Log system initialization successful\n");
     } else {
-        uart_puts("日志系统初始化失败\n");
+        uart_puts("Log system initialization failed\n");
     }
     
-    /* 创建测试任务 */
-    xTaskCreate(log_test_task, (const signed char *)"LOG_TEST", 512, NULL, 3, NULL); // 高优先级任务
+    /* Create test tasks */
+    xTaskCreate(log_test_task, (const signed char *)"LOG_TEST", 512, NULL, 3, NULL); // High priority task
     
-    /* 创建多个调度器测试任务，具有不同的优先级和参数 */
-    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST1", 256, (void *)1, 2, NULL); // 低优先级
-    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST2", 256, (void *)2, 2, NULL); // 中优先级
+    /* Create multiple scheduler test tasks with different priorities and parameters */
+    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST1", 256, (void *)1, 2, NULL); // Low priority
+    xTaskCreate(scheduler_test_task, (const signed char *)"SCHED_TEST2", 256, (void *)2, 2, NULL); // Medium priority
     
-    uart_puts("任务创建完成，开始调度器...\n");
+    uart_puts("Task creation completed, starting scheduler...\n");
     
-    /* 启动FreeRTOS调度器 */
+    /* Start FreeRTOS scheduler */
     vTaskStartScheduler();
     
-    /* 如果调度器失败，进入安全循环 */
+    /* If scheduler fails, enter safe loop */
     while(1) {
         ;
     }

@@ -234,6 +234,7 @@ void vTickISR (unsigned int nIRQ, void *pParam)
  */
 static void prvSetupTimerInterrupt( void )
 {
+	log_info("task_name", "主动放弃CPU================================================");
 	unsigned long ulCompareMatch;
 	
 

@@ -1,19 +1,19 @@
 /*
- * 条件编译日志模块使用说明：
+ * Conditional compilation log module usage instructions:
  * 
- * 1. 启用日志模块：在 FreeRTOSConfig.h 中设置 configUSE_LOG_MODULE = 1
- *    或者使用 make ENABLE_LOG=1 编译
- *    - 会创建 scheduler_test_task，使用完整的日志功能
- *    - 日志函数正常工作，提供详细的调试信息
+ * 1. Enable log module: Set configUSE_LOG_MODULE = 1 in FreeRTOSConfig.h
+ *    or compile with make ENABLE_LOG=1
+ *    - Will create scheduler_test_task, using full log functionality
+ *    - Log functions work normally, providing detailed debug information
  * 
- * 2. 禁用日志模块：在 FreeRTOSConfig.h 中设置 configUSE_LOG_MODULE = 0  
- *    或者使用 make ENABLE_LOG=0 编译
- *    - 会创建 simple_demo_task，使用简单的串口输出
- *    - 日志函数调用被优化掉，节省资源
+ * 2. Disable log module: Set configUSE_LOG_MODULE = 0 in FreeRTOSConfig.h
+ *    or compile with make ENABLE_LOG=0
+ *    - Will create simple_demo_task, using simple serial output
+ *    - Log function calls are optimized away, saving resources
  * 
- * 编译命令示例：
- * make clean && make ENABLE_LOG=1  # 启用日志版本
- * make clean && make ENABLE_LOG=0  # 禁用日志版本
+ * Compilation command examples:
+ * make clean && make ENABLE_LOG=1  # Enabled log version
+ * make clean && make ENABLE_LOG=0  # Disabled log version
  */
 
 /*
@@ -74,30 +74,30 @@
 /* The queue used by both tasks. */
 static QueueHandle_t xQueue = NULL;
 
-/* 全局计数器，用于记录日志 */
+/* Global counter for logging */
 static int counter = 0;
 
 /*-----------------------------------------------------------*/
 
-/* 简单整数转字符串函数 */
+/* Simple integer to string function */
 static void int_to_string(int num, char *buffer) {
     char tmp[12];
     int i = 0;
     
-    /* 特殊情况: 0 */
+    /* Special case: 0 */
     if (num == 0) {
         buffer[0] = '0';
         buffer[1] = '\0';
         return;
     }
     
-    /* 将数字转换为字符串 (逆序) */
+    /* Convert number to string (reverse order) */
     while (num > 0) {
         tmp[i++] = '0' + (num % 10);
         num /= 10;
     }
     
-    /* 反转字符串 */
+    /* Reverse string */
     int j = 0;
     while (i > 0) {
         buffer[j++] = tmp[--i];
@@ -105,43 +105,43 @@ static void int_to_string(int num, char *buffer) {
     buffer[j] = '\0';
 }
 
-/* 调度器测试任务 - 不依赖硬件GPIO */
+/* Scheduler test task - does not depend on hardware GPIO */
 void scheduler_test_task(void *pParam) {
     int count = 0;
     int task_id = (int)pParam;
     char task_name[20] = "SCHED-";
     char id_str[5];
     
-    /* 构造任务名称 */
+    /* Construct task name */
     int_to_string(task_id, id_str);
-    int i = 5; // "Task-" 的长度
+    int i = 6; // Length of "SCHED-"
     int j = 0;
     while (id_str[j]) {
         task_name[i++] = id_str[j++];
     }
     task_name[i] = '\0';
     
-    /* 使用日志API记录任务启动 */
-    log_info_str("SCHED", "启动调度器测试任务", task_name);
+    /* Use log API to record task startup */
+    log_info_str("SCHED", "Starting scheduler test task", task_name);
     
     while(count < 20) {
         count++;
         
-        /* 使用日志API记录计数 */
-        log_info_int(task_name, "循环计数", count);
+        /* Use log API to record count */
+        log_info_int(task_name, "Loop count", count);
         
-        /* 每5次循环，主动放弃CPU以测试调度 */
+        /* Every 5 loops, voluntarily give up CPU to test scheduling */
         if (count % 5 == 0) {
-            log_info(task_name, "主动放弃CPU");
+            log_info(task_name, "Voluntarily giving up CPU");
             taskYIELD();
         }
         
-        /* 添加延时，避免任务过于频繁执行 */
+        /* Add delay to avoid task executing too frequently */
         vTaskDelay(pdMS_TO_TICKS(50));
     }
     
-    /* 任务完成后记录并删除自己 */
-    log_info_str("SCHED", "任务完成，即将删除", task_name);
+    /* Record completion and delete self */
+    log_info_str("SCHED", "Task completed, about to delete", task_name);
     vTaskDelete(NULL);
 }
 
@@ -158,9 +158,9 @@ static void log_send_task( void * pvParameters )
     char task_name[20] = "Task-";
     char id_str[5];
     
-    /* 构造任务名称 */
+    /* Construct task name */
     int_to_string(task_id, id_str);
-    int i = 5; // "Task-" 的长度
+    int i = 5; // Length of "Task-"
     int j = 0;
     while (id_str[j]) {
         task_name[i++] = id_str[j++];
@@ -175,8 +175,8 @@ static void log_send_task( void * pvParameters )
 
     for( ; ; )
     {
-        /* 使用日志API记录计数 */
-        log_info_int(task_name, "循环计数", counter);
+        /* Use log API to record count */
+        log_info_int(task_name, "Loop count", counter);
 
         /* Place this task in the blocked state until it is time to run again. */
         vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
@@ -200,9 +200,9 @@ static void log_recv_task( void * pvParameters )
     char task_name[20] = "Task-";
     char id_str[5];
     
-    /* 构造任务名称 */
+    /* Construct task name */
     int_to_string(task_id, id_str);
-    int i = 5; // "Task-" 的长度
+    int i = 5; // Length of "Task-"
     int j = 0;
     while (id_str[j]) {
         task_name[i++] = id_str[j++];
@@ -223,8 +223,8 @@ static void log_recv_task( void * pvParameters )
          * is it the expected value?  If it is, toggle the LED. */
         if( ulReceivedValue == ulExpectedValue )
         {
-            /* 使用日志API记录计数 */
-            log_info_int(task_name, "循环计数", counter);
+            /* Use log API to record count */
+            log_info_int(task_name, "Loop count", counter);
 
             counter++;
 
@@ -323,21 +323,21 @@ int main_blinky( void )
     vSendString("\nHello FreeRTOS!\n");
 
 #if (configUSE_LOG_MODULE == 1)
-    log_info_str("SCHED", "启动调度器测试任务", "task_name");
+    log_info_str("SCHED", "Starting scheduler test task", "task_name");
 
-    /* 初始化日志系统 */
+    /* Initialize log system */
     LogConfig_t log_config = {
         .level = LOG_LEVEL_INFO,
         .show_timestamp = 1  
     };
     
     if (log_init(&log_config)) {
-        vSendString("日志系统初始化成功\n");
+        vSendString("Log system initialization successful\n");
     } else {
-        vSendString("日志系统初始化失败\n");
+        vSendString("Log system initialization failed\n");
     }
 #else
-    vSendString("日志模块已禁用\n");
+    vSendString("Log module disabled\n");
 #endif
     
     /* Create the queue. */
@@ -346,27 +346,25 @@ int main_blinky( void )
     if( xQueue != NULL )
     {
 #if (configUSE_LOG_MODULE == 1)
-        /* 创建使用日志的生产者和消费者任务 */
+        /* Create producer and consumer tasks using logs */
         xTaskCreate( log_send_task, "Rx", configMINIMAL_STACK_SIZE * 2U, (void *)1,
                      mainQUEUE_SEND_TASK_PRIORITY, NULL );
         xTaskCreate( log_recv_task, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2,
                      mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
-        /* 创建使用日志的调度器测试任务 */
+        /* Create scheduler test tasks using logs */
         xTaskCreate( scheduler_test_task, "SCHED_TEST1", configMINIMAL_STACK_SIZE * 2U, (void *)1, 
                     2, NULL);
         xTaskCreate( scheduler_test_task, "SCHED_TEST2", configMINIMAL_STACK_SIZE * 2U, (void *)2, 
                     2, NULL);
 #else
-        /* 创建不使用日志的生产者和消费者任务 */
+        /* Create producer and consumer tasks without using logs */
         xTaskCreate( prvQueueSendTask, "Rx", configMINIMAL_STACK_SIZE * 2U, (void *)1, 
                     mainQUEUE_SEND_TASK_PRIORITY, NULL);
         xTaskCreate( prvQueueReceiveTask, "Tx", configMINIMAL_STACK_SIZE * 2U, (void *)2, 
                     mainQUEUE_RECEIVE_TASK_PRIORITY, NULL);
 #endif
     }
-
-    // uart_puts("任务创建完成，开始调度器...\n");
-    vSendString("任务创建完成，开始调度器...\n");
+    vSendString("Task creation completed, starting scheduler...\n");
 
     vTaskStartScheduler();
 

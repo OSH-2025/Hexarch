@@ -1,59 +1,59 @@
 #include "log.h"
 #include <string.h>
 
-/* 简单字符输出函数 - 使用最基本的方式直接输出字符 */
+/* Simple character output function - use the most basic way to output characters directly */
 static void uart_putc(char c) {
     /* 
-     * 实现一个极简的字符输出函数
-     * 这里应该调用底层的UART发送函数，具体实现取决于平台
-     * 使用与main.c中相同的UART地址
+     * Implement a minimalist character output function
+     * This should call the underlying UART send function, specific implementation depends on platform
+     * Use the same UART address as in main.c
      */
-    volatile unsigned int *uart_data = (volatile unsigned int *)0x101f1000; /* 与main.c中的UART0_DR地址一致 */
+    volatile unsigned int *uart_data = (volatile unsigned int *)0x101f1000; /* Consistent with UART0_DR address in main.c */
     *uart_data = c;
 }
 
-/* 简单字符串输出函数 - 不依赖stdio库 */
+/* Simple string output function - does not depend on stdio library */
 static void uart_puts(const char *str) {
     while (*str) {
         uart_putc(*str++);
     }
 }
 
-/* 字符缓冲区处理辅助函数 */
+/* Character buffer processing helper function */
 static void append_to_buffer(char *buffer, int *position, const char *str) {
-    while (*str && *position < 255) { /* 保留一位用于NULL终止符 */
+    while (*str && *position < 255) { /* Reserve one bit for NULL terminator */
         buffer[(*position)++] = *str++;
     }
-    buffer[*position] = '\0'; /* 确保字符串以NULL结尾 */
+    buffer[*position] = '\0'; /* Ensure string ends with NULL */
 }
 
-/* 整数转字符串函数 - 用于替代sprintf */
+/* Integer to string function - used to replace sprintf */
 static void int_to_str(int num, char *buffer, int base) {
     static const char digits[] = "0123456789ABCDEF";
-    char tmp[12]; /* 足够放置32位整数的字符串 */
+    char tmp[12]; /* Enough to hold 32-bit integer string */
     int i = 0;
     int sign = 0;
     
-    /* 处理负数 */
+    /* Handle negative numbers */
     if (num < 0 && base == 10) {
         sign = 1;
         num = -num;
     }
     
-    /* 特殊情况: 0 */
+    /* Special case: 0 */
     if (num == 0) {
         buffer[0] = '0';
         buffer[1] = '\0';
         return;
     }
     
-    /* 将数字转换为对应进制的字符串 (逆序) */
+    /* Convert number to corresponding base string (reverse order) */
     while (num > 0) {
         tmp[i++] = digits[num % base];
         num /= base;
     }
     
-    /* 添加负号（如果是负数） */
+    /* Add negative sign (if negative) */
     if (sign) {
         buffer[0] = '-';
         sign = 1;
@@ -61,7 +61,7 @@ static void int_to_str(int num, char *buffer, int base) {
         sign = 0;
     }
     
-    /* 反转字符串 */
+    /* Reverse string */
     int j = 0;
     while (i > 0) {
         buffer[j + sign] = tmp[--i];
@@ -70,16 +70,16 @@ static void int_to_str(int num, char *buffer, int base) {
     buffer[j + sign] = '\0';
 }
 
-/* 十六进制数转字符串 */
+/* Hexadecimal number to string */
 static void hex_to_str(uint32_t num, char *buffer) {
     static const char digits[] = "0123456789ABCDEF";
     int i = 0;
     
-    /* 添加0x前缀 */
+    /* Add 0x prefix */
     buffer[i++] = '0';
     buffer[i++] = 'x';
     
-    /* 转换过程 */
+    /* Conversion process */
     bool leading_zero = true;
     for (int shift = 28; shift >= 0; shift -= 4) {
         uint8_t digit = (num >> shift) & 0xF;
@@ -92,21 +92,21 @@ static void hex_to_str(uint32_t num, char *buffer) {
     buffer[i] = '\0';
 }
 
-/* 日志系统配置 */
+/* Log system configuration */
 static LogConfig_t log_config = {
     .level = LOG_LEVEL_INFO,
     .show_timestamp = true
 };
 
-/* 互斥量，用于线程安全 */
+/* Mutex for thread safety */
 static xSemaphoreHandle log_mutex = NULL;
 
-/* 简化的日志级别对应的文本 */
+/* Simplified log level corresponding text */
 static const char *level_strings[] = {
     "NONE", "ERROR", "INFO ", "DEBUG"
 };
 
-/* 初始化日志系统 */
+/* Initialize log system */
 bool log_init(LogConfig_t *config) {
     if (log_mutex != NULL) {
         vSemaphoreDelete(log_mutex);
@@ -114,7 +114,7 @@ bool log_init(LogConfig_t *config) {
     
     vSemaphoreCreateBinary(log_mutex);
     if (log_mutex == NULL) {
-        return false; /* 创建信号量失败 */
+        return false; /* Failed to create semaphore */
     }
     
     if (config != NULL) {
@@ -124,39 +124,39 @@ bool log_init(LogConfig_t *config) {
     return true;
 }
 
-/* 设置日志级别 */
+/* Set log level */
 void log_set_level(LogLevel_t level) {
     if (level <= LOG_LEVEL_DEBUG) {
         log_config.level = level;
     }
 }
 
-/* 获取当前日志级别 */
+/* Get current log level */
 LogLevel_t log_get_level(void) {
     return log_config.level;
 }
 
-/* 内部通用日志写入函数 */
-/* 输出示例
+/* Internal common log write function */
+/* Output example
  * log_write_internal(LOG_LEVEL_ERROR, "TAG", "An error occurred");
- * 输出: [12345] ERROR (TAG): An error occurred
+ * Output: [12345] ERROR (TAG): An error occurred
  */
 static void log_write_internal(LogLevel_t level, const char *tag, const char *message) {
-    /* 检查日志级别 */
+    /* Check log level */
     if (level > log_config.level || level == LOG_LEVEL_NONE) {
         return;
     }
     
-    /* 尝试获取互斥量 */
+    /* Try to acquire mutex */
     if (log_mutex != NULL && xSemaphoreTake(log_mutex, portMAX_DELAY) != pdTRUE) {
-        return;  /* 获取互斥量失败 */
+        return;  /* Failed to acquire mutex */
     }
     
-    /* 使用静态缓冲区而不是动态分配，避免内存碎片 */
+    /* Use static buffer instead of dynamic allocation to avoid memory fragmentation */
     static char buffer[256];
     int pos = 0;
     
-    /* 添加时间戳 */
+    /* Add timestamp */
     if (log_config.show_timestamp) {
         portTickType ticks = xTaskGetTickCount();
         char tick_str[12];
@@ -167,28 +167,28 @@ static void log_write_internal(LogLevel_t level, const char *tag, const char *me
         append_to_buffer(buffer, &pos, "] ");
     }
     
-    /* 添加日志级别和标签 */
+    /* Add log level and tag */
     append_to_buffer(buffer, &pos, level_strings[level]);
     append_to_buffer(buffer, &pos, " (");
     append_to_buffer(buffer, &pos, tag);
     append_to_buffer(buffer, &pos, "): ");
     
-    /* 添加日志消息 */
+    /* Add log message */
     append_to_buffer(buffer, &pos, message);
     
-    /* 添加换行符 */
+    /* Add newline */
     append_to_buffer(buffer, &pos, "\r\n");
     
-    /* 输出日志 */
+    /* Output log */
     uart_puts(buffer);
     
-    /* 释放互斥量 */
+    /* Release mutex */
     if (log_mutex != NULL) {
         xSemaphoreGive(log_mutex);
     }
 }
 
-/* 基础日志函数实现 */
+/* Basic log function implementation */
 void log_error(const char *tag, const char *message) {
     log_write_internal(LOG_LEVEL_ERROR, tag, message);
 }
@@ -201,10 +201,10 @@ void log_debug(const char *tag, const char *message) {
     log_write_internal(LOG_LEVEL_DEBUG, tag, message);
 }
 
-/* 整数值日志函数实现 */
-/* 输出示例
+/* Integer value log function implementation */
+/* Output example
  * log_error_int("TAG", "Error occurred", -42);
- * 输出: [12345] ERROR (TAG): Error occurred: -42
+ * Output: [12345] ERROR (TAG): Error occurred: -42
  */
 void log_error_int(const char *tag, const char *message, int value) {
     char buffer[256];
@@ -220,9 +220,9 @@ void log_error_int(const char *tag, const char *message, int value) {
     log_error(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_info_int("TAG", "Value is", 123);
- * 输出: [12345] INFO (TAG): Value is: 123
+ * Output: [12345] INFO (TAG): Value is: 123
  */
 void log_info_int(const char *tag, const char *message, int value) {
     char buffer[256];
@@ -238,9 +238,9 @@ void log_info_int(const char *tag, const char *message, int value) {
     log_info(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_debug_int("TAG", "Debug value", 42);
- * 输出: [12345] DEBUG (TAG): Debug value: 42
+ * Output: [12345] DEBUG (TAG): Debug value: 42
  */
 void log_debug_int(const char *tag, const char *message, int value) {
     char buffer[256];
@@ -256,10 +256,10 @@ void log_debug_int(const char *tag, const char *message, int value) {
     log_debug(tag, buffer);
 }
 
-/* 十六进制值日志函数实现 */
-/* 输出示例
+/* Hexadecimal value log function implementation */
+/* Output example
  * log_error_hex("TAG", "Error code", 0x1A2B3C4D);
- * 输出: [12345] ERROR (TAG): Error code: 0x1A2B3C4D
+ * Output: [12345] ERROR (TAG): Error code: 0x1A2B3C4D
  */ 
 void log_error_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
@@ -275,9 +275,9 @@ void log_error_hex(const char *tag, const char *message, uint32_t value) {
     log_error(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_info_hex("TAG", "Hex value", 0x12345678);
- * 输出: [12345] INFO (TAG): Hex value: 0x12345678
+ * Output: [12345] INFO (TAG): Hex value: 0x12345678
  */
 void log_info_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
@@ -293,9 +293,9 @@ void log_info_hex(const char *tag, const char *message, uint32_t value) {
     log_info(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_debug_hex("TAG", "Debug hex", 0xABCDEF01);
- * 输出: [12345] DEBUG (TAG): Debug hex: 0xABCDEF01
+ * Output: [12345] DEBUG (TAG): Debug hex: 0xABCDEF01
  */
 void log_debug_hex(const char *tag, const char *message, uint32_t value) {
     char buffer[256];
@@ -311,10 +311,10 @@ void log_debug_hex(const char *tag, const char *message, uint32_t value) {
     log_debug(tag, buffer);
 }
 
-/* 字符串连接日志函数实现 */
-/* 输出示例
+/* String concatenation log function implementation */
+/* Output example
  * log_error_str("TAG", "Error message", "Something went wrong");
- * 输出: [12345] ERROR (TAG): Error message: Something went wrong
+ * Output: [12345] ERROR (TAG): Error message: Something went wrong
  */
 void log_error_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];
@@ -327,9 +327,9 @@ void log_error_str(const char *tag, const char *message, const char *str_value) 
     log_error(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_info_str("TAG", "Info message", "All systems operational");
- * 输出: [12345] INFO (TAG): Info message: All systems operational
+ * Output: [12345] INFO (TAG): Info message: All systems operational
  */
 void log_info_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];
@@ -342,9 +342,9 @@ void log_info_str(const char *tag, const char *message, const char *str_value) {
     log_info(tag, buffer);
 }
 
-/* 输出示例
+/* Output example
  * log_debug_str("TAG", "Debug message", "Debugging in progress");
- * 输出: [12345] DEBUG (TAG): Debug message: Debugging in progress
+ * Output: [12345] DEBUG (TAG): Debug message: Debugging in progress
  */
 void log_debug_str(const char *tag, const char *message, const char *str_value) {
     char buffer[256];

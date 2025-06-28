@@ -94,8 +94,10 @@ void uart_init() {
 void task1(void *pParam) {
 
 	int i = 0;
+    uart_puts("1\n");
 	while(1) {
 		i++;
+        uart_puts("1\n");
 		SetGpio(16, 1);
 		vTaskDelay(200);
 	}
@@ -104,8 +106,10 @@ void task1(void *pParam) {
 void task2(void *pParam) {
 
 	int i = 0;
+    uart_puts("2\n");
 	while(1) {
 		i++;
+        uart_puts("2\n");
 		vTaskDelay(100);
 		SetGpio(16, 0);
 		vTaskDelay(100);
