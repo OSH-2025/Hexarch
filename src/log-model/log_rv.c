@@ -1,18 +1,9 @@
 #include "log.h"
+
+/* 只有在日志模块启用时才编译实际的实现 */
+#if (configUSE_LOG_MODULE == 1)
+
 #include <string.h>
-
-/*
-static void uart_putc(char c) {
-    volatile unsigned int *uart_data = (volatile unsigned int *)0x101f1000; // 与main.c中的UART0_DR地址一致 
-    *uart_data = c;
-}
-
-static void uart_puts(const char *str) {
-    while (*str) {
-        uart_putc(*str++);
-    }
-}
-*/
 
 /* 字符缓冲区处理辅助函数 */
 static void append_to_buffer(char *buffer, int *position, const char *str) {
@@ -351,3 +342,5 @@ void log_debug_str(const char *tag, const char *message, const char *str_value) 
     
     log_debug(tag, buffer);
 }
+
+#endif /* configUSE_LOG_MODULE */

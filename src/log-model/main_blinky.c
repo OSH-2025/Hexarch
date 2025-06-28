@@ -47,13 +47,11 @@
 #include <task.h>
 #include <queue.h>
 
+#include <stdio.h>
+
 #include "riscv-virt.h"
 #include "ns16550.h"
 #include "log.h"
-
-#define UART0_BASE  0x101f1000
-#define UART0_DR    (*(volatile unsigned int*)(UART0_BASE + 0x00))
-#define UART0_FR    (*(volatile unsigned int*)(UART0_BASE + 0x18))
 
 /* Priorities used by the tasks. */
 #define mainQUEUE_RECEIVE_TASK_PRIORITY    ( tskIDLE_PRIORITY + 2 )

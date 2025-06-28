@@ -32,52 +32,22 @@
 
 /*
  * ========== 编译配置示例 ==========
- * 
- * 1. 开发阶段（启用日志）：
- *    在 FreeRTOSConfig.h 中设置：
- *    #define configUSE_LOG_MODULE    1
+ *   
+ *  通过 Makefile 控制：
+ *  make ENABLE_LOG=1    # 启用日志
+ *  make ENABLE_LOG=0    # 禁用日志
  *    
- * 2. 生产版本（禁用日志）：
- *    在 FreeRTOSConfig.h 中设置：
- *    #define configUSE_LOG_MODULE    0
- *    
- * 3. 通过 Makefile 控制：
- *    make ENABLE_LOG=1    # 启用日志
- *    make ENABLE_LOG=0    # 禁用日志
- *    
- *    在 Makefile 中可以添加：
- *    ifeq ($(ENABLE_LOG), 1)
- *        CPPFLAGS += -DconfigUSE_LOG_MODULE=1
- *    else
- *        CPPFLAGS += -DconfigUSE_LOG_MODULE=0
- *    endif
+ *  在 Makefile 中可以添加：
+ *  ifeq ($(ENABLE_LOG), 1)
+ *      CPPFLAGS += -DconfigUSE_LOG_MODULE=1
+ *  else
+ *      CPPFLAGS += -DconfigUSE_LOG_MODULE=0
+ *  endif
  */
 
 /*
  * ========== 代码示例 ==========
  */
-
-#include "FreeRTOS.h"
-#include "log.h"
-
-void example_task(void *pParam) {
-    int counter = 0;
-    
-    // 这些日志调用在 configUSE_LOG_MODULE=0 时会被优化掉
-    log_info("TASK", "任务启动");
-    
-    while (counter < 10) {
-        counter++;
-        
-        // 这些调用在禁用日志时不会产生任何代码
-        log_info_int("TASK", "计数", counter);
-        
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-    
-    log_info("TASK", "任务完成");
-    vTaskDelete(NULL);
-}
 
 /*
  * ========== 性能影响对比 ==========
