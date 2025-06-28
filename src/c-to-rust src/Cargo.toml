@@ -1,29 +1,25 @@
 [package]
-name = "c-to-rust"
+name = "hexarch_freeRTOS_rust"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-libc = "0.2.172"
 spin = "0.5.2"
-embedded-alloc = "0.6.0"
+buddy_system_allocator = "0.8.0"
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+libc = "0.2"
+
+
+[build-dependencies]
+cc = "1.0"
 
 [features]
-deault = []
-configUSE_16_BIT_TICKS = []
-configUSE_APPLICATION_TASK_TAG = []
-
-
-[build]
-rustflags = [
-    "-Zbuild-std=core,alloc",  # 编译 core 和 alloc 库
-  "-Zbuild-std-features=panic_abort",  # 使用 abort 策略
-  "-Cpanic=abort",  # 禁用栈展开
-]
-
-[profile.dev]
-panic = "abort"
-
-[profile.release]
-panic = "abort"
+default = ["configSUPPORT_STATIC_ALLOCATION","configSUPPORT_DYNAMIC_ALLOCATION","INCLUDE_vTaskSuspend","configUSE_PREEMPTION",
+        "configUSE_MUTEXES"]
+configSUPPORT_STATIC_ALLOCATION = []
+configSUPPORT_DYNAMIC_ALLOCATION=[]
+INCLUDE_vTaskSuspend=[]
+configUSE_PREEMPTION=[]
+configUSE_MUTEXES=[]

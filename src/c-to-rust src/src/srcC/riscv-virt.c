@@ -24,72 +24,25 @@
  *
  * 1 tab == 4 spaces!
  */
- 
 
-#if __riscv_xlen == 64
-#define store_x sd
-#define load_x ld
-#define portWORD_SIZE 8
-#else
-#define store_x sw
-#define load_x lw
-#define portWORD_SIZE 4
-#endif
+#include "FreeRTOS.h"
 
+//#include <string.h>
 
-	.section .init
-	.globl _start
-	.type _start,@function
-_start:
-	.cfi_startproc
-	.cfi_undefined ra
-.option push
-.option norelax
-	la  gp, __global_pointer$
-.option pop
+#include "riscv-virt.h"
+#include "ns16550.h"
 
-	// Continue primary hart
-	csrr a0, mhartid
-	li   a1, 0
-	bne  a0, a1, secondary
+int xGetCoreID( void )
+{
+int id;
 
-	// Primary hart
-	la sp, _stack_top
+	__asm ("csrr %0, mhartid" : "=r" ( id ) );
 
-	// Load data section
-	la a0, _data_lma
-	la a1, _data
-	la a2, _edata
-	bgeu a1, a2, 2f
-1:
-	load_x t0, (a0)
-	store_x t0, (a1)
+	return id;
+}
 
-	addi a0, a0, 8
-	addi a1, a1, 8
-	bltu a1, a2, 1b
-2:
-	// Clear bss section
-	la a0, _bss
-	la a1, _ebss
-	bgeu a0, a1, 2f
-1:
-	store_x zero, (a0)
-	addi a0, a0, 8
-	bltu a0, a1, 1b
-2:
-
-	// argc, argv, envp is 0
-	li  a0, 0
-	li  a1, 0
-	li  a2, 0
-	jal kernel_init
-	jal main
-1:
-	wfi
-	j 1b
-
-secondary:
-	wfi
-	j secondary
-	.cfi_endproc
+void handle_trap(void)
+{
+	while (1)
+		;
+}
