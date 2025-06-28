@@ -1,1 +1,0 @@
-../generic/queue_get_static_buffers_utest.c
