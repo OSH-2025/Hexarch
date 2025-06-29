@@ -8,7 +8,7 @@ fn main() {
             .file("src/srcC/portASM.S")
             .file("src/start.S")
             .flag("-march=rv32imac_zicsr")
-            .file("src/srcC/config_resolve.c")
+            .file("src/srcC/wrapper.c")
             .file("src/srcC/main_blinky.c")
             .file("src/srcC/riscv-virt.c")
             .compile("portASM");
