@@ -1,6 +1,7 @@
 //! chip specific api
 
-use crate::kernel::tasks::*;
+#[macro_use]
+use crate::tasks::*;
 // use crate::tasks::*;
 use crate::portable::ns16550::{v_out_ns16550, Device};
 use core::arch::asm;

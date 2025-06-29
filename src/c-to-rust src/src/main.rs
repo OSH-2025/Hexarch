@@ -9,7 +9,7 @@
 
 #[allow(dead_code)]
 #[macro_use]
-mod kernel;
+mod base;
 #[macro_use]
 mod semphr;
 #[macro_use]
@@ -18,6 +18,13 @@ mod event_group;
 #[macro_use]
 mod list;
 use crate::list::*;
+#[macro_use]
+mod queue;
+use crate::queue::queue::*;
+#[macro_use]
+mod tasks;
+#[macro_use]
+use crate::tasks::*;
 // mod tasks;
 // mod queue;
 // mod list;
@@ -28,8 +35,8 @@ use alloc::sync::Arc;
 use core::arch::asm;
 use core::ffi::c_void;
 use core::intrinsics::size_of;
-use kernel::projdefs::{pdFALSE, pdTRUE};
-use kernel::{FreeRTOSconfig::*, queue::*, tasks::*, *};
+use base::projdefs::{pdFALSE, pdTRUE};
+use base::{FreeRTOSconfig::*, *};
 // use kernel::{FreeRTOSconfig::*, event_group::*, semphr::*, *};
 use semphr::semphr::*;
 use event_group::event_group::*;
@@ -50,19 +57,20 @@ extern "C" {
 }
 
 fn taskHighPriority(t: *mut c_void) {
-    let mut pxPreviousWakeTime: TickType = 0;
+    // let mut pxPreviousWakeTime: TickType = 0;
     // let mut count = 0;
     loop {
         // count += 1;
         // if count >= 10 {
         //     vTaskDelete(None);
         // }
-        xTaskDelayUntil(&mut pxPreviousWakeTime, 100);
-         vSendString(&format!(
-             "pxPreviousWakeTime={}",
-             pxPreviousWakeTime
-         ));
+        // xTaskDelayUntil(&mut pxPreviousWakeTime, 100);
+        //  vSendString(&format!(
+        //      "pxPreviousWakeTime={}",
+        //      pxPreviousWakeTime
+        //  ));
         vSendString("high priority task running ");
+        // vSendString("12345678945612345678945612 ");
         
     }
 }
@@ -116,7 +124,7 @@ pub fn main_new() {
         "taskLowPriority ",
         USER_STACK_SIZE as u32,
         Some(param2),
-        2,
+        3,
         Some(Arc::clone(&(task2handler.as_ref().unwrap()))),
     );
     // xTaskCreate(
