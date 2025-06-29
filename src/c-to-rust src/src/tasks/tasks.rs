@@ -286,7 +286,7 @@ pub fn prvInitialiseNewTask<'a>(
 
 /// Idle task function.
 pub fn prvIdleTask(t: *mut c_void) {
-    vSendString("idle gogogogo");
+    vSendString("start Idle");
     loop {
         #[cfg(feature = "configUSE_IDLE_HOOK")]
         {
@@ -297,7 +297,7 @@ pub fn prvIdleTask(t: *mut c_void) {
              * CALL A FUNCTION THAT MIGHT BLOCK. */
             vApplicationIdleHook();
         } /* configUSE_IDLE_HOOK */
-        vSendString("idle gogogogo!!!(in loop)");
+        vSendString("Idle task running(cyc)");
     }
 }
 

@@ -72,7 +72,7 @@ pub extern "C" fn vTaskStartScheduler() {
 /// Idle task
 pub fn prvIdleTask(t: *mut core::ffi::c_void) {
     // ... 实现代码
-    vSendString("idle gogogogo");
+    vSendString("start Idle Task");
     loop {
         #[cfg(feature = "configUSE_IDLE_HOOK")]
         {
@@ -83,7 +83,7 @@ pub fn prvIdleTask(t: *mut core::ffi::c_void) {
              * CALL A FUNCTION THAT MIGHT BLOCK. */
             vApplicationIdleHook();
         } /* configUSE_IDLE_HOOK */
-        vSendString("idle gogogogo!!!(in loop)");
+        vSendString("Idle task running(cyc)");
     }
 }
 

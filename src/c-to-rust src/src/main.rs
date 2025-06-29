@@ -57,18 +57,18 @@ extern "C" {
 }
 
 fn taskHighPriority(t: *mut c_void) {
-    // let mut pxPreviousWakeTime: TickType = 0;
+    let mut pxPreviousWakeTime: TickType = 0;
     // let mut count = 0;
     loop {
         // count += 1;
         // if count >= 10 {
         //     vTaskDelete(None);
         // }
-        // xTaskDelayUntil(&mut pxPreviousWakeTime, 100);
-        //  vSendString(&format!(
-        //      "pxPreviousWakeTime={}",
-        //      pxPreviousWakeTime
-        //  ));
+        xTaskDelayUntil(&mut pxPreviousWakeTime, 100);
+         vSendString(&format!(
+             "previous wake time is {}",
+             pxPreviousWakeTime
+         ));
         vSendString("high priority task running ");
         // vSendString("12345678945612345678945612 ");
         
@@ -116,7 +116,7 @@ pub fn main_new() {
         "taskHighPriority",
         USER_STACK_SIZE as u32,
         Some(param1),
-        3,
+        4,
         Some(Arc::clone(&(task1handler.as_ref().unwrap()))),
     );
     xTaskCreate(

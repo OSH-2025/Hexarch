@@ -8,13 +8,16 @@ use core::alloc::{GlobalAlloc, Layout};
 
 /// INITIAL Start should init_heap first
 pub fn init_heap() {
+    //静态可变变量,在 Rust 中，static mut 变量被认为是不安全的
     static mut HEAP: [u8; KERNEL_HEAP_SIZE] = [0; KERNEL_HEAP_SIZE];
-
+    //内存池初始化
+    //在系统启动时调用 init_heap() 初始化分配器
     unsafe {
-        DYNAMIC_ALLOCATOR
+        //使用 unsafe 块来明确告诉编译器：我知道这里可能有风险，但我保证代码是安全的
+        DYNAMIC_ALLOCATOR //访问静态可变变量
             .Buddy_System_Allocator
             .lock()
-            .init(HEAP.as_ptr() as usize, KERNEL_HEAP_SIZE);
+            .init(HEAP.as_ptr() as usize, KERNEL_HEAP_SIZE); //原始指针操作 + 直接操作内存地址
     }
 }
 //在 no_std 环境中，Rust 不提供标准库的内存分配功能，因此需要手动实现全局内存分配器
@@ -37,6 +40,7 @@ unsafe impl GlobalAlloc for RustAllocator {
     //这些方法定义了内存分配、释放、清零分配和重新分配的行为
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         vTaskEnterCritical();
+        //线程安全保护
         let x = self.Buddy_System_Allocator.alloc(layout);
         vTaskExitCritical();
         x
