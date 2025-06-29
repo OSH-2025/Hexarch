@@ -1,5 +1,5 @@
 //! Global Allocatot Definition <br>
-//! use buddy_system_allocator and wrap as SimpleAllocator
+//! use buddy_system_allocator and wrap as RustAllocator
 use crate::tasks::{vTaskEnterCritical, vTaskExitCritical};
 use crate::base::FreeRTOSconfig::KERNEL_HEAP_SIZE;
 use alloc::format;
@@ -17,22 +17,24 @@ pub fn init_heap() {
             .init(HEAP.as_ptr() as usize, KERNEL_HEAP_SIZE);
     }
 }
-
+//在 no_std 环境中，Rust 不提供标准库的内存分配功能，因此需要手动实现全局内存分配器
 #[global_allocator]
 /// DYNAMIC_ALLOCATOR as global_allocator
-pub static DYNAMIC_ALLOCATOR: SimpleAllocator = SimpleAllocator::empty();
+pub static DYNAMIC_ALLOCATOR: RustAllocator = RustAllocator::empty();
 #[alloc_error_handler]
 /// alloc_error_handler function
 fn alloc_error_handler(_: core::alloc::Layout) -> ! {
-    panic!("alloc_error_handler do nothing but panic!");
+    panic!("alloc error handler panic!");
 }
 
 /// Critical Wrapped Buddy System Allocator
-pub struct SimpleAllocator {
+pub struct RustAllocator {
     Buddy_System_Allocator: LockedHeap<32>,
 }
 
-unsafe impl GlobalAlloc for SimpleAllocator {
+unsafe impl GlobalAlloc for RustAllocator {
+    //这个trait必须实现
+    //这些方法定义了内存分配、释放、清零分配和重新分配的行为
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         vTaskEnterCritical();
         let x = self.Buddy_System_Allocator.alloc(layout);
@@ -59,9 +61,9 @@ unsafe impl GlobalAlloc for SimpleAllocator {
     }
 }
 
-impl SimpleAllocator {
+impl RustAllocator {
     pub const fn empty() -> Self {
-        SimpleAllocator {
+        RustAllocator {
             Buddy_System_Allocator: LockedHeap::<32>::empty(),
         }
     }
