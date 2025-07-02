@@ -68,9 +68,144 @@ RAM 无需外部硬件，避免硬件配置的干扰，调试过程简单，而�
 [FatFS]测试完成，卸载文件系统
 [FatFS]FatFS集成测试成功完成！
 ```
+## C模块添加--日志模块
+- 实现的功能：
+  - 提供简化的日志系统，支持错误、信息、调试三个级别
+  - 支持整数、十六进制、字符串值的格式化输出
+  - 线程安全的日志记录（使用FreeRTOS信号量）
+  - 时间戳显示
+  - 不依赖复杂的格式化库，适合嵌入式环境
+- 带来的好处：
+  - 减少调试时间，提供清晰的运行时信息
+  - 支持条件编译，可在发布版本中完全禁用以节省资源
+  - 内存占用小，使用静态缓冲区避免内存碎片
+  - 简单易用的API接口
+- 整体如何实现：
+  - 核心文件：log.c、log.h、main_blinky.c(测试程序)
+- 运行实例：
+  - 已录视频...
+- 日志可选：
+  - 核心配置机制：日志模块的可选性主要通过configUSE_LOG_MODULE宏来控制
+```
+/* FreeRTOSConfig.h 中的配置 */
+#ifndef configUSE_LOG_MODULE
+    #define configUSE_LOG_MODULE    1  /* 默认启用日志 */
+#endif
+```
+```
+# Makefile 中的配置
+ENABLE_LOG ?= 1
 
+ifeq ($(ENABLE_LOG), 1)
+    CPPFLAGS += -DconfigUSE_LOG_MODULE=1
+    $(info 编译配置: 日志模块已启用)
+else
+    CPPFLAGS += -DconfigUSE_LOG_MODULE=0
+    $(info 编译配置: 日志模块已禁用)
+endif
+```
+用户可以通过以下方式控制：
+make ENABLE_LOG=1 - 启用日志
+make ENABLE_LOG=0 - 禁用日志
+优化效果：
+启用时：
+编译器包含完整的日志实现代码
+提供线程安全的日志功能
+支持不同日志级别、时间戳等功能
+增加代码体积和运行时开销
+禁用时：
+所有日志调用被替换为空宏操作do {} while(0)
+编译器优化会完全移除这些空操作
+不占用任何ROM/RAM空间
+日志模块运行时零开销
+这种设计非常适合嵌入式系统，特别是资源受限的环境，开发阶段可以启用详细日志进行调试，发布版本可以完全禁用以节省资源。
+- 不足之处：
+  - 结果输出媒介单一，目前日志模块的测试结果只可输出到终端上
 
+## C重构
+- 我们并没有对于内部算法, 运行逻辑进行优化, 而是进行了FreeRTOS内部各部分的解耦, 最终成功对需要拆分的queue.c, tasks.c, timers.c三个文件中的所有函数进行了分类，拆分timers.c函数并成功运行. 
+整体变化:(原来的文件函数情况→现在的)
+- queue.c
+  queue_base.c：队列的基本操作实现
+  queue_mutex.c：互斥量与信号量相关实现
+  queue_isr.c：中断相关队列操作
+  queue_registry.c：队列注册表相关
+  queue_private.c：私有静态函数实现（如数据拷贝、锁操作等）
 
+- tasks.c
+  task_create.c：任务的创建与删除
+  task_schedule.c：任务调度与切换
+  task_delay.c：任务延时与挂起
+  task_priority.c：任务优先级与状态管理
+  task_hook.c：任务钩子与统计
+  task_private.c：私有静态函数实现
+
+- 由于最终我们是要在rust版本的freeRTOS中将代码进行模块化,所以我们实质上并没有真的拆分C代码,只是将每个C文件中的各个数据结构,函数等进行了归类,方便我们对其进行rust的模块化
+- 对应关系(以tasks为例)
+mod.rs - 模块组织文件
+职责： 作为模块的入口点，组织和管理子模块
+  声明子模块（types, creation, scheduler, control）
+  使用 #[macro_use] 导出各模块的宏
+  重新导出所有子模块的公共接口，提供统一的访问点
+
+types.rs - 类型定义模块
+职责： 定义任务系统的基础类型和数据结构主要功能：
+  类型别名定义： StackType_t, TCB_t_link, TaskHandle_t 等
+  核心数据结构： tskTaskControlBlock（任务控制块）
+  枚举类型： eTaskState（任务状态枚举）
+  辅助结构： TimeOut（超时结构）
+  全局变量： 调度器状态、tick计数、任务数量等
+  常量定义： taskEVENTLISTITEM_VALUE_IN_USE 等
+
+creation.rs - 任务创建模块
+对应（task_create.c）
+职责： 负责任务的创建和初始化主要功能：
+  静态任务创建： xTaskCreateStatic() - 使用预分配的栈和TCB
+  动态任务创建： xTaskCreate() - 动态分配栈和TCB
+  任务初始化： prvInitialiseNewTask() - 初始化新任务的TCB
+  就绪列表管理： prvAddNewTaskToReadyList(), prvAddTaskToReadyList()
+  优先级记录： taskRECORD_READY_PRIORITY()
+核心流程：
+  分配/使用栈空间
+  创建/使用TCB
+  初始化任务参数（名称、优先级等）
+  设置栈指针和入口点
+  将任务添加到就绪列表
+
+scheduler.rs - 调度器核心模块
+对应（task_schedule.c）
+职责： 实现任务调度和调度器核心逻辑主要功能：
+  调度器启动： vTaskStartScheduler() - 启动调度器，创建空闲任务
+  空闲任务： prvIdleTask() - 系统空闲时运行的任务
+  优先级选择： taskSELECT_HIGHEST_PRIORITY_TASK(), taskSELECT_HIGHEST_PRIORITY()
+  任务切换： taskYield() - 主动让出CPU
+  时间管理： xTaskIncrementTick() - 增加系统tick，处理延迟任务
+  延迟管理： prvAddCurrentTaskToDelayedList(), taskSWITCH_DELAYED_LISTS()
+  任务延迟： vTaskDelay(), xTaskDelayUntil()
+关键算法：
+  最高优先级任务选择算法
+  延迟任务唤醒机制
+  时间片轮转调度
+
+control.rs - 任务控制模块
+对应（task_delay.c、task_priority.c、task_hook.c、task_private.c）
+职责： 提供任务生命周期管理和控制功能主要功能：
+  临界区管理： vTaskEnterCritical(), vTaskExitCritical()
+  任务挂起/恢复： vTaskSuspend(), vTaskResume()
+  任务删除： vTaskDelete()
+  调度器挂起/恢复： vTaskSuspendAll(), vTaskResumeAll()
+  优先级管理： vTaskPrioritySet(), uxTaskPriorityGet()
+  互斥锁优先级继承： xTaskPriorityInherit(), xTaskPriorityDisinherit()
+  事件列表管理： xTaskRemoveFromEventList(), vTaskPlaceOnEventList()
+  超时处理： vTaskSetTimeOutState(), xTaskCheckForTimeOut()
+  任务查询： pcTaskGetName()
+控制流程：
+  任务状态转换（就绪 ↔ 运行 ↔ 阻塞 ↔ 挂起）
+  优先级调整和继承
+  事件等待和唤醒
+  超时检测和处理
+
+其他的模块,如list,由于list是freeRTOS中最底层的一个数据结构,其中的功能主要就是增删改查,因此没有必要将其再度拆分,故保留list.rs为一个完整的整体;queue则拆成了queue模块和semr模块,原因是freeRTOS的信号量是用queue来实现的,因此queue.c中既包含了任务队列相关的操作,也包含了信号量的相关操作,秉持着模块化的思想,我们将其进行了拆分
 ## Rust改写
 
 ### 顶层结构与启动流程
@@ -134,8 +269,6 @@ portable目录：平台移植
   - 中断处理
 
 
-
-
 ## Rust模块添加
 我们同样把fatfs的C语言版本加进了rust版的FreeRTOS中，如同c版本的一样，同样是使用内存模拟磁盘，主要增加了fs文件夹，其中的rust代码是改写自fatfs官方所提供的c语言文件，加入后，对build.rs进行修改，并且在用到的地方引入mod fs，即可运行这个文件系统。
 进行了简单的测试，在这里，设置了三个任务，优先级由高到低，把文件系统的任务优先级设为最高，并且在次优先级的两个任务中，在运行一段时间后都挂起，所以，在高优先级任务启动后，会转入空闲任务（这个任务是在没有任务执行时，自动执行的，这是一种最大化利用率的方式，空闲任务可以干一些用户自己设计的事），然后低优先级任务运行，挂起后会，再次转入其他任务，实现两个任务交替完成的效果。
@@ -148,6 +281,14 @@ portable目录：平台移植
 - 其次测试了两个优先级不同的任务,在高优先级的任务每执行一次后主动挂起一段时间,低优先级的任务能否被调度器调度,发现每执行一次高优先级的任务,就会执行多次低优先级的任务
 - 然后又测试了是否正常,创建了两个任务,一个是释放信号量,一个是获取信号量,调度方式是定时器中断调度,发现有获取成功和失败,也有释放成功和失败,这都是预期结果,因为比如当释放信号量的任务还没有释放的时候就已经触发了定时器中断,那么获取信号量的任务当然获取失败
 - 上述测试都在PPT中录制有测试视频
+
+## 几个问题
+1. 为什么选择将C语言版本的FatFS加入系统,而不是用rust版本或者重写一个rust版本的
+我们在中期的时候就打算如果有多余的精力,就尝试自己写rust版本的FatFS,但是改写freeRTOS几乎消耗了我们的所有精力,我们确实没有时间再对FatFS进行改写,不过我们找到了rust版本的fatfs,但是这个库不知为何无法添加,因此我们只能选用C语言版本的FatFS
+2. 为什么最终没有上板成功
+我们选的这一套DEMO是官方库中的专门用于Qemu模拟的DEMO,因为在Qemu模拟比较方便我们运行调试,所以我们改写的时候采用了这一套DEMO,但是一开始买的是stm32的板子,freeRTOS每一套DEMO的portable接口都大有不同,在这上边花费我们的精力不是我们应该主要考虑的内容,因此我们最终决定先忽略上板的问题,先完成改写,但是完成改写后已经要进行答辩了,我们也没有多余精力去适配上板了
+3. 中期的时候我们本来打算增加FatFS模块,日志模块,还有网络模块和CLI模块,为何最后只添加了FatFS和日志
+一方面我们能力和精力确实有限,光是适配FatFS和日志+改写freeRTOS就已经花了很多时间,另一方面是我们对于硬件的了解太少了,在nostd环境下实现网络模块我们有点不知所措,CLI模块也是这个原因
 
 ## 困难与解决
 - 调试与错误处理：
@@ -164,3 +305,4 @@ portable目录：平台移植
     - 所有权与智能指针: 我们没有使用裸指针，而是使用了 Arc<RwLock<ListItemT>> 和 Weak<RwLock<ListItemT>>。Arc 用于强引用（如链表头指向第一个节点），Weak 用于弱引用（如节点间的 prev 指针），这巧妙地解决了循环引用问题，防止了内存泄漏。RwLock 则保证了对节点内容并发访问的安全性。
     - 封装为模块: 我们将整个链表的实现封装在 list 模块中，对外提供与 C 版本功能一致的安全 API（如 vListInsertEnd），而将所有复杂的指针和所有权操作隐藏在模块内部。
     - 在上面举过双向链表的例子，这就是一个最典型的C语言数据结构
+
