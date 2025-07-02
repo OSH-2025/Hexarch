@@ -282,14 +282,108 @@ portable目录：平台移植
 - 然后又测试了是否正常,创建了两个任务,一个是释放信号量,一个是获取信号量,调度方式是定时器中断调度,发现有获取成功和失败,也有释放成功和失败,这都是预期结果,因为比如当释放信号量的任务还没有释放的时候就已经触发了定时器中断,那么获取信号量的任务当然获取失败
 - 上述测试都在PPT中录制有测试视频
 
+## 几个改写过程中的关键步骤
+- nostd环境下,我们需要提供一个全局内存分配器,这样才能进行动态内存分配,Vec Arc Weak等都需要动态内存分配,这里我们主要是使用了一个第三方库buddy_system_allocator来实现的
+- 改写前期逃不开的一个话题是C和rust的混合编译问题,关于rust如何调用C语言,我们采用的方法是使用bindgen生成C语言的FFI提供给rust调用,前提是C语言的源码已经被编译成静态库,这一部分的详述为
+Bindgen + cc +libc实现rust调用C语言的具体步骤(默认使用的操作系统为linux)
+1. 下载bindgen: 在bash里输入cargo install bindgen-cli
+2. 下载依赖:sudo apt install libclang-dev
+3. 创建cargo项目:cargo new your-project-name
+4. 在生成的cargo.toml中添加 libc 和 cc 库(CC库是用来build rust之前将所需的C代码编译了)
+5. 在项目根目录(并非src)中创建build.rs文件(这里假设在src中已经创建好了test.c以及test.h文件)
+```
+// in build.rs
+fn main(){
+cc::Build::new()
+    .file("src/test.c") // 如果有更多,就继续file("")即可
+  //.file("src/more.c")
+    .compile("wrapper");
+}
+```
+```
+//test.c以及test.h如下
+typedef struct TestC
+{
+    /* data */
+    int foo;
+    char c;
+    float f;
+}Testc;
+
+Testc init_test();
+int out_int(int a);
+char out_char(char a);
+float out_float(float f);
+
+#include "test.h"
+
+Testc init_test(){
+    Testc test;
+    test.foo = 10;
+    test.c = '#';
+    test.f = 3.1415;
+    return test;
+}
+int out_int(int a){
+    return a * 3;
+}
+char out_char(char a){
+    return a + 1;
+}
+float out_float(float f){
+    return f;
+}
+```
+6. 在src中创建wrapper.h并在其中include需要的库,这里我们需要的是test
+7. 在bash中使用bindgen生成链接:bindgen wrapper.h -o wrapper.rs //这会根据wrapper中包含的库文件生成一个链接文件wrapper.rs
+8. 至此,我们的项目中应该生成了一个wrapper.rs文件,你可以点进去查看,它将C的静态库与rust进行了绑定,让我们可以在rust中调用C, 为了调用,我们需要使用rust 的 mod
+```
+// rust main.rs
+use wrapper::{init_test, out_char, out_float, out_int};
+
+mod wrapper; //使用mod 将wrapper库包含进来,使得我们可以调用
+extern crate libc;
+use libc::{c_char, c_int, c_float};
+fn main() {
+    println!("Hello, world!");
+    //C语言的库需要显式的使用 unsafe 块 包裹, 这样才可以正确的调用
+    unsafe{
+        let t = init_test();
+        println!("{:?}",t);
+
+        let foo: c_int = out_int(t.foo);
+        println!("{}",foo);
+
+        let c : c_char = out_char(t.c);
+        println!("{}",c);
+
+        let f: c_float = out_float(t.f);
+        println!("{}",f);
+    }
+}
+```
+9. 构建项目,测试运行,回到项目根目录:cargo build
+10. 如果没有报错,则恭喜你构建项目成功
+你也可以使用`cargo check`来检查是否可以编译
+11. 如果前10步成功完成,则使用cargo run来运行代码,如果正确运行,你应该可以看到:
+```
+   Compiling rustbindgenc v0.1.0 (/home/kyomoto/repo/rust/rustbindgenc)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/rustbindgenc`
+Hello, world!
+TestC { foo: 10, c: 35, f: 3.1415 }
+30
+36
+3.1415
+```
 ## 几个问题
 1. 为什么选择将C语言版本的FatFS加入系统,而不是用rust版本或者重写一个rust版本的
 我们在中期的时候就打算如果有多余的精力,就尝试自己写rust版本的FatFS,但是改写freeRTOS几乎消耗了我们的所有精力,我们确实没有时间再对FatFS进行改写,不过我们找到了rust版本的fatfs,但是这个库不知为何无法添加,因此我们只能选用C语言版本的FatFS
-2. 为什么最终没有上板成功
+1. 为什么最终没有上板成功
 我们选的这一套DEMO是官方库中的专门用于Qemu模拟的DEMO,因为在Qemu模拟比较方便我们运行调试,所以我们改写的时候采用了这一套DEMO,但是一开始买的是stm32的板子,freeRTOS每一套DEMO的portable接口都大有不同,在这上边花费我们的精力不是我们应该主要考虑的内容,因此我们最终决定先忽略上板的问题,先完成改写,但是完成改写后已经要进行答辩了,我们也没有多余精力去适配上板了
-3. 中期的时候我们本来打算增加FatFS模块,日志模块,还有网络模块和CLI模块,为何最后只添加了FatFS和日志
+1. 中期的时候我们本来打算增加FatFS模块,日志模块,还有网络模块和CLI模块,为何最后只添加了FatFS和日志
 一方面我们能力和精力确实有限,光是适配FatFS和日志+改写freeRTOS就已经花了很多时间,另一方面是我们对于硬件的了解太少了,在nostd环境下实现网络模块我们有点不知所措,CLI模块也是这个原因
-4. 改写后的系统性能上如何
+1. 改写后的系统性能上如何
 我们在中期的时候就提过,由于我们要添加更多的模块,因此性能方面并不是我们要考虑的事情,因为添加更多模块就意味着要牺牲部分性能,不过对于freeRTOS本身的内核改写,性能上应该是没有什么损失,有损失的地方可能就是由于我们在rust为了安全性,选择使用Arc Weak RwLock机制来包裹裸指针对其进行操作,这相比于C语言直接操作裸指针来说应该是需要一部分额外开销
 
 ## 困难与解决
